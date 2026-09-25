@@ -1,109 +1,584 @@
+/* =========================
+   BASIC
+========================= */
+
 * {
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
-    padding: 20px;
-    background: #f5f5f5;
-    color: #111;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 13px;
+    background: #111111;
+    color: #d2d2d2;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 14px;
+    line-height: 1.4;
 }
 
-header {
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    padding: 18px 22px;
+
     display: flex;
     justify-content: space-between;
-    margin-bottom: 80px;
+
+    z-index: 100;
 }
 
-a {
-    color: inherit;
-    text-decoration: none;
-}
+.logo,
+.index-button {
+    color: #d2d2d2;
 
-.project {
-    margin-bottom: 140px;
-}
-
-.project-info {
-    display: grid;
-    grid-template-columns: 1fr 100px 250px;
-    margin-bottom: 12px;
-}
-
-.project-info h2,
-.project-info p {
-    margin: 0;
+    font-family: inherit;
     font-size: 13px;
-    font-weight: normal;
+
+    text-decoration: none;
+
+    letter-spacing: 0.05em;
 }
 
-.project-image img {
-    width: 100%;
+.index-button {
+    background: none;
+    border: none;
+
+    padding: 0;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   INDEX MENU
+========================= */
+
+.index-menu {
+    position: fixed;
+
+    top: 55px;
+    right: 22px;
+
+    width: 300px;
+
+    padding: 20px;
+
+    background: #151515;
+
+    border: 1px solid #333333;
+
+    z-index: 90;
+
+    display: none;
+}
+
+.index-menu.open {
     display: block;
 }
 
-.about {
-    max-width: 500px;
-    margin-top: 200px;
-    margin-bottom: 200px;
-}
+.index-menu a {
+    display: block;
 
-.about h2 {
-    font-size: 13px;
-    font-weight: normal;
-    margin-bottom: 40px;
-}
+    color: #bdbdbd;
 
-.about p {
-    font-size: 22px;
+    text-decoration: none;
+
+    margin-bottom: 13px;
+
+    font-size: 12px;
+
     line-height: 1.25;
 }
 
-footer {
+.index-menu a:hover {
+    color: #ffffff;
+}
+
+
+/* =========================
+   SECTIONS
+========================= */
+
+.section {
+    position: relative;
+
+    min-height: 100vh;
+
+    padding:
+        100px
+        22px
+        160px;
+}
+
+.section-title {
+    font-size: 11px;
+
+    letter-spacing: 0.12em;
+
+    color: #777777;
+
+    margin-bottom: 80px;
+}
+
+
+/* =========================
+   PROJECTS
+========================= */
+
+.project {
+    position: relative;
+
+    min-height: 850px;
+
+    margin-bottom: 180px;
+}
+
+.project-number {
+    font-family: monospace;
+
+    font-size: 12px;
+
+    color: #777777;
+}
+
+.project h1 {
+    margin: 12px 0;
+
+    font-size: clamp(32px, 6vw, 90px);
+
+    font-weight: 400;
+
+    line-height: 0.95;
+
+    letter-spacing: -0.04em;
+}
+
+.project-info {
+    font-family: monospace;
+
+    font-size: 11px;
+
+    color: #777777;
+
+    margin-top: 20px;
+}
+
+
+/* =========================
+   PLACEHOLDERS
+========================= */
+
+.image-placeholder {
+    background: #202020;
+
+    border: 1px solid #292929;
+
     display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #555555;
+
+    font-family: monospace;
+
+    font-size: 10px;
+
+    letter-spacing: 0.05em;
+}
+
+
+/* LOTUS */
+
+.project-001 h1 {
+    position: absolute;
+
+    left: 5vw;
+    top: 55px;
+}
+
+.project-001 .project-info {
+    position: absolute;
+
+    left: 5vw;
+    top: 160px;
+}
+
+.project-001 .image-large {
+    position: absolute;
+
+    width: 62vw;
+    height: 62vh;
+
+    right: 3vw;
+    top: 180px;
+}
+
+.project-001 .image-small {
+    position: absolute;
+
+    width: 25vw;
+    height: 30vh;
+
+    left: 3vw;
+    bottom: 20px;
+}
+
+.project-description {
+    position: absolute;
+
+    width: 220px;
+
+    right: 3vw;
+    bottom: 0;
+
+    font-size: 12px;
+
+    color: #888888;
+}
+
+
+/* 002 */
+
+.project-002 {
+    min-height: 900px;
+}
+
+.project-002 h1 {
+    position: absolute;
+
+    left: 35vw;
+    top: 80px;
+
+    font-size: clamp(28px, 5vw, 70px);
+}
+
+.project-002 .project-info {
+    position: absolute;
+
+    left: 35vw;
+    top: 290px;
+}
+
+.project-002 .image-medium {
+    position: absolute;
+
+    width: 38vw;
+    height: 52vh;
+
+    left: 8vw;
+    top: 390px;
+}
+
+
+/* 003 */
+
+.project-003 h1 {
+    position: absolute;
+
+    left: 2vw;
+    top: 80px;
+}
+
+.project-003 .image-wide {
+    position: absolute;
+
+    width: 72vw;
+    height: 58vh;
+
+    right: 0;
+    top: 270px;
+}
+
+.project-003 .project-info {
+    position: absolute;
+
+    left: 2vw;
+    bottom: 80px;
+}
+
+
+/* 004 */
+
+.project-004 {
+    min-height: 700px;
+}
+
+.project-004 h1 {
+    position: absolute;
+
+    left: 42vw;
+    top: 100px;
+}
+
+.project-004 .image-small {
+    position: absolute;
+
+    width: 30vw;
+    height: 38vh;
+
+    left: 10vw;
+    top: 300px;
+}
+
+
+/* =========================
+   COSMIC FIELD
+========================= */
+
+.cosmic-field {
+    min-height: 1200px;
+}
+
+.photo-project {
+    position: relative;
+
+    min-height: 900px;
+}
+
+.photo-project h1 {
+    position: absolute;
+
+    left: 20vw;
+    top: 50px;
+
+    font-size: clamp(30px, 5vw, 75px);
+
+    font-weight: 400;
+
+    line-height: 0.95;
+}
+
+.photo-project .image-cosmic {
+    position: absolute;
+
+    width: 60vw;
+    height: 65vh;
+
+    left: 5vw;
+    top: 300px;
+}
+
+.photo-project .image-cosmic-small:nth-of-type(2) {
+    position: absolute;
+
+    width: 20vw;
+    height: 25vh;
+
+    right: 3vw;
+    top: 230px;
+}
+
+.photo-project .image-cosmic-small:nth-of-type(3) {
+    position: absolute;
+
+    width: 24vw;
+    height: 30vh;
+
+    right: 8vw;
+    bottom: 0;
+}
+
+
+/* =========================
+   WRITING
+========================= */
+
+.writing {
+    min-height: 1200px;
+}
+
+.writing-fragment {
+    position: absolute;
+
+    font-family: Georgia, serif;
+
+    font-size: clamp(18px, 2vw, 28px);
+
+    line-height: 1.15;
+
+    color: #aaaaaa;
+}
+
+.fragment-01 {
+    left: 8vw;
+    top: 300px;
+}
+
+.fragment-02 {
+    right: 12vw;
+    top: 500px;
+}
+
+.fragment-03 {
+    left: 30vw;
+    top: 760px;
+}
+
+.fragment-04 {
+    right: 25vw;
+    top: 1000px;
+}
+
+
+/* =========================
+   ABOUT
+========================= */
+
+.about {
+    min-height: 650px;
+}
+
+.about-text {
+    width: 420px;
+
+    margin-left: 20vw;
+
+    font-size: 18px;
+
+    line-height: 1.3;
+}
+
+.about-text p {
+    margin-bottom: 40px;
+}
+
+
+/* =========================
+   CONTACT
+========================= */
+
+.contact {
+    min-height: 500px;
+}
+
+.contact-info {
+    margin-left: 40vw;
+}
+
+.contact-info a {
+    color: #bdbdbd;
+
+    text-decoration: none;
+}
+
+.contact-info a:hover {
+    color: white;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    padding: 25px 22px;
+
+    display: flex;
+
     justify-content: space-between;
-    padding-bottom: 20px;
+
+    color: #555555;
+
+    font-family: monospace;
+
+    font-size: 10px;
 }
 
-footer a {
-    margin-left: 20px;
-}
 
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 700px) {
 
-    body {
-        padding: 15px;
+    .section {
+        padding:
+            90px
+            15px
+            100px;
     }
 
-    .project-info {
-        display: block;
+    .project {
+        min-height: 750px;
     }
 
-    .project-info p {
-        margin-top: 3px;
+    .project h1 {
+        font-size: 42px;
     }
 
-    .project-image {
-        margin-top: 15px;
+    .project-001 h1,
+    .project-001 .project-info,
+    .project-001 .image-large,
+    .project-001 .image-small,
+    .project-description,
+
+    .project-002 h1,
+    .project-002 .project-info,
+    .project-002 .image-medium,
+
+    .project-003 h1,
+    .project-003 .image-wide,
+    .project-003 .project-info,
+
+    .project-004 h1,
+    .project-004 .image-small,
+
+    .photo-project h1,
+    .photo-project .image-cosmic,
+    .photo-project .image-cosmic-small {
+
+        position: relative;
+
+        left: auto;
+        right: auto;
+        top: auto;
+        bottom: auto;
+
+        width: 100%;
+
+        margin-bottom: 25px;
     }
 
-    .about p {
-        font-size: 18px;
+    .image-placeholder {
+        height: 45vh !important;
     }
 
-    footer {
-        display: block;
-    }
+    .about-text {
+        width: 90%;
 
-    footer div {
-        margin-bottom: 20px;
-    }
-
-    footer a {
         margin-left: 0;
-        margin-right: 15px;
+    }
+
+    .contact-info {
+        margin-left: 0;
+    }
+
+    .writing-fragment {
+        position: relative;
+
+        left: auto;
+        right: auto;
+        top: auto;
+
+        margin: 120px 0;
     }
 }
