@@ -1,10 +1,11 @@
 const indexButton = document.getElementById("indexButton");
 const indexMenu = document.getElementById("indexMenu");
 
-indexButton.addEventListener("click", () => {
-    indexMenu.classList.toggle("open");
-});
-
+if (indexButton) {
+    indexButton.addEventListener("click", () => {
+        indexMenu.classList.toggle("open");
+    });
+}
 
 const menuLinks = document.querySelectorAll(".index-menu a");
 
