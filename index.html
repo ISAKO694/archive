@@ -1,63 +1,788 @@
+对，script.js 现在就是把前面 CSS 里的“阈值系统”真正启动起来。
+
+你原来的移动端 Index 功能保留，同时加入：
+
+鼠标微光跟随 → 星点 hover → 点击星点 → Threshold 穿越动画 → Cosmic Field 成为第一层 → 滚动进入 Projects → Writing on the Body 的隐藏触发 → 根据当前滚动位置改变网站状态。
+
+直接把现在的 script.js 全部替换成下面这个：
+
+/* =========================================================
+   ISA WU — THRESHOLD
+   Main interaction system
+========================================================= */
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const body = document.body;
+const main = document.getElementById("top");
+
+const thresholdOverlay = document.getElementById("threshold-overlay");
+const thresholdDot = document.getElementById("threshold-dot");
+const cursorLight = document.getElementById("cursor-light");
+
+const bodyTrigger = document.getElementById("body-trigger");
+
+const indexButton = document.getElementById("indexButton");
+const indexMenu = document.getElementById("indexMenu");
+
+
+/* =========================================================
+   MOBILE INDEX
+========================================================= */
+
+if (indexButton && indexMenu) {
+
+    indexButton.addEventListener("click", () => {
+        indexMenu.classList.toggle("open");
+    });
+
+
+    const menuLinks = indexMenu.querySelectorAll("a");
+
+    menuLinks.forEach(link => {
+
+        link.addEventListener("click", () => {
+            indexMenu.classList.remove("open");
+        });
+
+    });
+
+}
+
+
+/* =========================================================
+   THRESHOLD CURSOR LIGHT
+========================================================= */
+
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+
+let lightX = mouseX;
+let lightY = mouseY;
+
+
+window.addEventListener("mousemove", (event) => {
+
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+
+});
+
+
+function animateCursorLight() {
+
+    if (!cursorLight) return;
+
+    lightX += (mouseX - lightX) * 0.08;
+    lightY += (mouseY - lightY) * 0.08;
+
+    cursorLight.style.left = `${lightX}px`;
+    cursorLight.style.top = `${lightY}px`;
+
+    requestAnimationFrame(animateCursorLight);
+}
+
+
+animateCursorLight();
+
+
+/* =========================================================
+   THRESHOLD DOT
+========================================================= */
+
+let thresholdOpened = false;
+
+
+function enterThreshold() {
+
+    if (thresholdOpened) return;
+
+    thresholdOpened = true;
+
+    body.classList.add("threshold-entering");
+
+    /*
+        Slight delay lets the black-hole / light expansion
+        happen before the overlay disappears.
+    */
+
+    window.setTimeout(() => {
+
+        body.classList.add("threshold-complete");
+
+        if (main) {
+            main.setAttribute("data-site-state", "cosmic");
+        }
+
+    }, 1050);
+
+
+    /*
+        Remove the overlay from interaction after the
+        transition has visually completed.
+    */
+
+    window.setTimeout(() => {
+
+        if (thresholdOverlay) {
+            thresholdOverlay.style.pointerEvents = "none";
+        }
+
+        body.classList.remove("threshold-entering");
+
+    }, 1700);
+
+}
+
+
+if (thresholdDot) {
+
+    thresholdDot.addEventListener("click", enterThreshold);
+
+}
+
+
+/* =========================================================
+   KEYBOARD ACCESS
+========================================================= */
+
+if (thresholdDot) {
+
+    thresholdDot.addEventListener("keydown", (event) => {
+
+        if (
+            event.key === "Enter" ||
+            event.key === " "
+        ) {
+
+            event.preventDefault();
+
+            enterThreshold();
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   SCROLL STATE
+   Cosmic Field → Projects → Writing
+========================================================= */
+
+const cosmicField = document.getElementById("cosmic-field");
+const projects = document.getElementById("projects");
+const writing = document.getElementById("writing");
+
+
+function getSectionProgress(section) {
+
+    if (!section) return 0;
+
+    const rect = section.getBoundingClientRect();
+
+    const viewportCenter =
+        window.innerHeight * 0.5;
+
+    const sectionStart = rect.top;
+    const sectionEnd = rect.bottom;
+
+    const range =
+        sectionEnd - sectionStart;
+
+    if (range <= 0) return 0;
+
+    const progress =
+        (viewportCenter - sectionStart) / range;
+
+    return Math.max(
+        0,
+        Math.min(1, progress)
+    );
+
+}
+
+
+function updateSiteState() {
+
+    if (!main || !thresholdOpened) return;
+
+
+    const cosmicRect =
+        cosmicField
+            ? cosmicField.getBoundingClientRect()
+            : null;
+
+    const projectsRect =
+        projects
+            ? projects.getBoundingClientRect()
+            : null;
+
+    const writingRect =
+        writing
+            ? writing.getBoundingClientRect()
+            : null;
+
+
+    const viewportCenter =
+        window.innerHeight * 0.5;
+
+
+    /*
+        Cosmic Field
+    */
+
+    if (
+        cosmicRect &&
+        viewportCenter >= cosmicRect.top &&
+        viewportCenter < cosmicRect.bottom
+    ) {
+
+        main.setAttribute(
+            "data-site-state",
+            "cosmic"
+        );
+
+        body.setAttribute(
+            "data-threshold-depth",
+            "1"
+        );
+
+        return;
+    }
+
+
+    /*
+        Projects
+    */
+
+    if (
+        projectsRect &&
+        viewportCenter >= projectsRect.top &&
+        viewportCenter < projectsRect.bottom
+    ) {
+
+        main.setAttribute(
+            "data-site-state",
+            "projects"
+        );
+
+        body.setAttribute(
+            "data-threshold-depth",
+            "2"
+        );
+
+        return;
+    }
+
+
+    /*
+        Writing on the Body
+    */
+
+    if (
+        writingRect &&
+        viewportCenter >= writingRect.top &&
+        viewportCenter < writingRect.bottom
+    ) {
+
+        main.setAttribute(
+            "data-site-state",
+            "writing"
+        );
+
+        body.setAttribute(
+            "data-threshold-depth",
+            "3"
+        );
+
+        return;
+    }
+
+
+    /*
+        Everything else
+    */
+
+    main.setAttribute(
+        "data-site-state",
+        "surface"
+    );
+
+    body.setAttribute(
+        "data-threshold-depth",
+        "0"
+    );
+
+}
+
+
+let scrollTicking = false;
+
+
+window.addEventListener("scroll", () => {
+
+    if (!scrollTicking) {
+
+        window.requestAnimationFrame(() => {
+
+            updateSiteState();
+
+            scrollTicking = false;
+
+        });
+
+        scrollTicking = true;
+
+    }
+
+});
+
+
+/* =========================================================
+   COSMIC FIELD PARALLAX
+========================================================= */
+
+const cosmicImages =
+    document.querySelectorAll(
+        ".photo-project .image-cosmic, " +
+        ".photo-project .image-cosmic-small"
+    );
+
+
+window.addEventListener("scroll", () => {
+
+    if (!thresholdOpened) return;
+
+    const viewportCenter =
+        window.innerHeight * 0.5;
+
+
+    cosmicImages.forEach((image, index) => {
+
+        const rect =
+            image.getBoundingClientRect();
+
+        const imageCenter =
+            rect.top + rect.height * 0.5;
+
+        const distance =
+            imageCenter - viewportCenter;
+
+        const movement =
+            distance * -0.025;
+
+        const rotation =
+            index === 0
+                ? movement * 0.01
+                : movement * 0.018;
+
+
+        image.style.transform =
+            `translate3d(0, ${movement}px, 0) rotate(${rotation}deg)`;
+
+    });
+
+});
+
+
+/* =========================================================
+   BODY TRIGGER
+========================================================= */
+
+if (bodyTrigger) {
+
+    bodyTrigger.addEventListener("mouseenter", () => {
+
+        if (writing) {
+            writing.classList.add("body-awakened");
+        }
+
+    });
+
+
+    bodyTrigger.addEventListener("mouseleave", () => {
+
+        if (writing) {
+            writing.classList.remove("body-awakened");
+        }
+
+    });
+
+
+    bodyTrigger.addEventListener("click", () => {
+
+        if (!writing) return;
+
+        writing.classList.toggle("body-open");
+
+    });
+
+}
+
+
+/* =========================================================
+   WRITING FRAGMENTS
+   Slight movement based on cursor
+========================================================= */
+
+const writingFragments =
+    document.querySelectorAll(
+        ".writing-fragment"
+    );
+
+
+if (writingFragments.length) {
+
+    window.addEventListener(
+        "mousemove",
+        (event) => {
+
+            const x =
+                (event.clientX / window.innerWidth) - 0.5;
+
+            const y =
+                (event.clientY / window.innerHeight) - 0.5;
+
+
+            writingFragments.forEach(
+                (fragment, index) => {
+
+                    const strength =
+                        2 + index * 0.8;
+
+                    const moveX =
+                        x * strength;
+
+                    const moveY =
+                        y * strength;
+
+
+                    fragment.style.setProperty(
+                        "--fragment-x",
+                        `${moveX}px`
+                    );
+
+                    fragment.style.setProperty(
+                        "--fragment-y",
+                        `${moveY}px`
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   WRITING BODY STATE
+========================================================= */
+
+function updateWritingState() {
+
+    if (!writing) return;
+
+    const rect =
+        writing.getBoundingClientRect();
+
+    const viewportCenter =
+        window.innerHeight * 0.5;
+
+    const distance =
+        Math.abs(
+            rect.top +
+            rect.height * 0.5 -
+            viewportCenter
+        );
+
+    const maxDistance =
+        window.innerHeight * 1.2;
+
+    const proximity =
+        Math.max(
+            0,
+            1 - distance / maxDistance
+        );
+
+
+    writing.style.setProperty(
+        "--writing-proximity",
+        proximity.toFixed(3)
+    );
+
+}
+
+
+window.addEventListener("scroll", () => {
+
+    window.requestAnimationFrame(
+        updateWritingState
+    );
+
+});
+
+
+/* =========================================================
+   IMAGE HOVER INFORMATION
+========================================================= */
+
+const imagePlaceholders =
+    document.querySelectorAll(
+        ".image-placeholder"
+    );
+
+
+imagePlaceholders.forEach(image => {
+
+    image.addEventListener("mouseenter", () => {
+
+        image.setAttribute(
+            "data-hovering",
+            "true"
+        );
+
+    });
+
+
+    image.addEventListener("mouseleave", () => {
+
+        image.removeAttribute(
+            "data-hovering"
+        );
+
+    });
+
+});
+
+
+/* =========================================================
+   SITE INITIALIZATION
+========================================================= */
+
+if (main) {
+
+    main.setAttribute(
+        "data-site-state",
+        "threshold"
+    );
+
+}
+
+
+/*
+    Prevent the page from jumping to the middle
+    before the Threshold has been opened.
+*/
+
+if (!thresholdOpened) {
+
+    window.scrollTo(
+        0,
+        0
+    );
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+if (thresholdDot) {
+
+    thresholdDot.setAttribute(
+        "aria-pressed",
+        "false"
+    );
+
+}
+
+
+function updateThresholdAccessibility() {
+
+    if (!thresholdDot) return;
+
+    thresholdDot.setAttribute(
+        "aria-pressed",
+        thresholdOpened
+            ? "true"
+            : "false"
+    );
+
+}
+
+
+if (thresholdDot) {
+
+    thresholdDot.addEventListener(
+        "click",
+        updateThresholdAccessibility
+    );
+
+}
+
+这里有一个很关键的变化：现在 script.js 不只是“让按钮能点”，而是在建立你网站真正的深度系统。
+
+进入以后：
+
+THRESHOLD
+   ↓
+COSMIC FIELD
+   ↓
+PROJECTS
+   ↓
+WRITING ON THE BODY
+
+而且 main 会实时拥有：
+
+data-site-state="cosmic"
+data-site-state="projects"
+data-site-state="writing"
+
+所以之后我们可以针对不同世界改变整个网页的状态，而不是一个页面从头到尾都是同一个背景。
+
+例如以后可以让：
+
+body[data-threshold-depth="1"]
+
+更偏黑、更有光和空间感；
+
+body[data-threshold-depth="2"]
+
+回到纸张、摄影、作品档案；
+
+body[data-threshold-depth="3"]
+
+让文字开始漂浮、身体轮廓出现、页面的秩序开始瓦解。
+
+还有一点我特意留了下来：Cosmic Field 的照片现在会随着滚动产生极轻微的视差运动。不是夸张的 parallax，而是让照片像漂在空间里面。这样你说的“逐渐进入一个新的世界”才会有身体上的感觉，而不是单纯页面滚动。
+
+目前这三份文件的职责已经比较清楚：
+
+index.html = 世界的结构
+
+style.css = 世界的视觉
+
+script.js = 世界如何呼吸、移动和改变状态
+
+接下来真正值得做的是把你的真实照片放进去，并根据每张照片本身调整 Cosmic Field 的色温和光感。那时候整个网站会开始从“设计概念”变成真正属于 Isa Wu 的视觉系统。🌑
+
+很好，这一版做得很好，我喜欢入口的设计，在不变这个的基础上我们需要处理一些细节，第一：主页面的颜色背景是现在的黑色，这样更有宇宙的空间感，第二，我需要三个单元分成三个连续的空间，进入入口后，是第一个单元cosmic field，排版是像图册一样，左右可以滑动的图册，一次一张，底下只有简洁的文字，第一个单元的空间中再设计一个黑洞的样子，点击之后是到达第二个单元的入口，第二个单元保留现在的主页面设计，上下滑动，一共四个项目，第三个单元是文字，同样地，第二个单元过渡到第三个单元我希望也有个动效，白色的女人身体线条，进入第三个单元就是漂浮的文字，一些我自己的文字，这里我给你几句：我记得自己诞生在一群跳动的白色粒子之间  世界是黑色的  如同精疲力竭那样的黑白  蕴含多变的活力 ；记忆里有轻无飘渺的蚊帐  冰凉的竹椅 竹床  温热的躯体；    所以这三个单元实际上是三个空间，由通道连接起来，About和contact和总结在一起，简单为主，最后结束会成为最初的界面，黑色界面中一个白点，现在只是空间需要有三个层面，另外侧边定位需要按照cosmic field, projects, 和writing on my body真实的顺序调整，整体风格都要协调一致，我喜欢现在的风格，你只需要在此基础上完善
+
+这一版我已经按照你刚刚重新确定的“三个连续空间 + 两个 threshold 通道”重新整理好了，而且入口那颗星的设计保持不动。
+
+现在完整的空间逻辑是：
+
+黑色入口 / 白点
+↓
+THRESHOLD
+↓
+01 Cosmic Field：横向图册，一次一张，底部只有极简 caption
+↓
+黑洞入口
+↓
+02 Projects：保留现在四个项目的排版，垂直向下进入
+↓
+白色女性身体线条 transition
+↓
+03 Writing on My Body：黑色空间里漂浮的文字
+↓
+About / Contact / 简短总结
+↓
+最后重新回到黑色 + 白点
+
+同时侧边导航现在是真实的：
+
+Cosmic field → Projects → Writing on my body → About / Contact
+
+并且会根据你现在所在的空间自动出现一个很微弱的白点作为定位。
+
+我也把你刚才给出的文字直接放进了第三空间，没有继续用之前那些比较“网页文案化”的英文句子。第一段和第二段会在空间里分开漂浮，第三段更淡，最后只留下 ...，让它有一种文字逐渐消散的感觉。
+
+这里是已经整理好的三个文件：
+
+下载完整网站文件夹 ZIP
+
+单独文件也可以直接拿走：
+
+下载 index.html
+
+下载 style.css
+
+下载 script.js
+
+有一个细节我特别保留了：Projects 并没有被重新设计成另一套风格。它仍然是你原来那种错落、留白、不同尺度图片和标题的位置关系，只是现在被放进更深的黑色空间里。这样 Cosmic Field 像“进入世界”，Projects 才像“进入作品”。
+
+而 Cosmic Field 的黑洞不是普通的“下一页”按钮，它现在是整个第一空间里的一个物理入口。点击它以后，第二空间不是简单 scroll，而是先经历一次收缩，再落到 Projects。
+
+第三空间则是完全不同的感知方式。身体线条只负责“打开门”，真正进入 Writing 后，身体消失，只留下文字。这个关系我觉得和你的作品脉络会比较接近：身体 → 记忆 → 语言。
+
+接下来最值得做的就是把 Cosmic Field 的三个 placeholder 换成你的真实照片，并根据照片本身决定每一张图在这个黑色空间里的尺寸、留白和顺序。这样这个网站就会开始真正变成你的视觉作品，而不是一个漂亮的 portfolio 模板。
+
+index.html
+HTML
+style.css
+Code
+script.js
+Code
+一个一个给我，我下载不了
+
+可以，我们一个一个来。先给你第一个文件：
+
+下载 index.html
+
+你下载好这个以后，我再给你 style.css。
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Isa Wu</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- =========================================================
+    <!-- =====================================================
          THRESHOLD INTRO
-         ========================================================= -->
+         ===================================================== -->
 
     <div id="threshold-overlay" aria-hidden="true">
 
-        <!-- Subtle light following the mouse -->
         <div id="cursor-light"></div>
 
-        <!-- The initial star / point -->
-        <button
-            id="threshold-dot"
-            aria-label="Enter Isa Wu's world"
-            type="button"
-        >
+        <button id="threshold-dot" type="button" aria-label="Enter Isa Wu's world">
             <span class="threshold-dot-core"></span>
             <span class="threshold-dot-glow"></span>
         </button>
 
-        <!-- Light / portal layers used during transition -->
         <div id="threshold-ring"></div>
-
         <div id="threshold-light">
             <span></span>
             <span></span>
             <span></span>
         </div>
-
         <div id="threshold-void"></div>
 
-        <div id="threshold-word">
-            THRESHOLD
-        </div>
+        <div id="threshold-word">THRESHOLD</div>
 
     </div>
 
 
-    <!-- =========================================================
-         SITE ATMOSPHERE
-         ========================================================= -->
+    <!-- SITE ATMOSPHERE -->
 
     <div id="site-atmosphere" aria-hidden="true">
-
         <div class="atmosphere-light atmosphere-light-01"></div>
         <div class="atmosphere-light atmosphere-light-02"></div>
         <div class="atmosphere-grain"></div>
-
     </div>
 
 
@@ -65,71 +790,36 @@
 
     <aside class="sidebar">
 
-        <a href="#top" class="site-name">
-            Isa Wu
-        </a>
+        <a href="#top" class="site-name">Isa Wu</a>
 
         <nav class="side-nav">
 
             <div class="nav-group">
-
-                <a href="#projects" class="nav-title">
-                    Projects
-                </a>
-
-                <a href="#lotus">
-                    001: Lotus
-                </a>
-
-                <a href="#letter">
-                    002: A Letter for<br>
-                    Netoсhka Nezvanova
-                </a>
-
-                <a href="#double-memory">
-                    003: My Double Memory
-                </a>
-
-                <a href="#jiaji">
-                    004: I Am Not Jiaji
-                </a>
-
-            </div>
-
-
-            <div class="nav-group">
-
-                <a href="#cosmic-field" class="nav-title">
+                <a href="#cosmic-field" class="nav-title" data-unit-link="cosmic">
                     Cosmic field
                 </a>
-
-                <a href="#lost-city">
-                    01: A Lost City Where<br>
-                    I Call Home
-                </a>
-
+                <a href="#lost-city">01: A Lost City Where<br>I Call Home</a>
             </div>
 
-
             <div class="nav-group">
-
-                <a href="#writing" class="nav-title">
-                    Writing on the body
+                <a href="#projects" class="nav-title" data-unit-link="projects">
+                    Projects
                 </a>
-
+                <a href="#lotus">001: Lotus</a>
+                <a href="#letter">002: A Letter for<br>Netoсhka Nezvanova</a>
+                <a href="#double-memory">003: My Double Memory</a>
+                <a href="#jiaji">004: I Am Not Jiaji</a>
             </div>
 
+            <div class="nav-group">
+                <a href="#writing" class="nav-title" data-unit-link="writing">
+                    Writing on my body
+                </a>
+            </div>
 
             <div class="nav-group">
-
-                <a href="#about" class="nav-title">
-                    About
-                </a>
-
-                <a href="#contact" class="nav-title">
-                    Contact
-                </a>
-
+                <a href="#about" class="nav-title">About</a>
+                <a href="#contact" class="nav-title">Contact</a>
             </div>
 
         </nav>
@@ -137,281 +827,95 @@
     </aside>
 
 
-    <!-- =========================================================
-         MOBILE HEADER
-         ========================================================= -->
+    <!-- MOBILE HEADER -->
 
     <header class="mobile-header">
-
-        <a href="#top">
-            Isa Wu
-        </a>
-
-        <button id="indexButton">
-            Index
-        </button>
-
+        <a href="#top">Isa Wu</a>
+        <button id="indexButton" type="button">Index</button>
     </header>
 
 
     <!-- MOBILE INDEX -->
 
     <nav class="index-menu" id="indexMenu">
-
-        <a href="#projects">
-            Projects
-        </a>
-
-        <a href="#lotus">
-            001: Lotus
-        </a>
-
-        <a href="#letter">
-            002: A Letter for Netoсhka Nezvanova
-        </a>
-
-        <a href="#double-memory">
-            003: My Double Memory
-        </a>
-
-        <a href="#jiaji">
-            004: I Am Not Jiaji
-        </a>
-
-        <a href="#cosmic-field">
-            Cosmic field
-        </a>
-
-        <a href="#lost-city">
-            01: A Lost City Where I Call Home
-        </a>
-
-        <a href="#writing">
-            Writing on the body
-        </a>
-
-        <a href="#about">
-            About
-        </a>
-
-        <a href="#contact">
-            Contact
-        </a>
-
+        <a href="#cosmic-field">Cosmic field</a>
+        <a href="#lost-city">01: A Lost City Where I Call Home</a>
+        <a href="#projects">Projects</a>
+        <a href="#lotus">001: Lotus</a>
+        <a href="#letter">002: A Letter for Netoсhka Nezvanova</a>
+        <a href="#double-memory">003: My Double Memory</a>
+        <a href="#jiaji">004: I Am Not Jiaji</a>
+        <a href="#writing">Writing on my body</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
     </nav>
 
 
-    <!-- =========================================================
-         MAIN
-         ========================================================= -->
-
     <main id="top" data-site-state="threshold">
 
+        <!-- =================================================
+             UNIT 01 — COSMIC FIELD
+             Horizontal image book
+             ================================================= -->
 
-        <!-- =====================================================
-             PROJECTS
-             ===================================================== -->
+        <section class="section cosmic-field" id="cosmic-field" data-unit="cosmic">
 
-        <section
-            class="section projects"
-            id="projects"
-            data-unit="projects"
-            data-threshold-depth="2"
-        >
-
-            <div class="section-title">
-                Projects
-            </div>
-
-
-            <!-- 001 -->
-
-            <article
-                class="project project-001"
-                id="lotus"
-                data-project="001"
-            >
-
-                <div class="project-number">
-                    001:
-                </div>
-
-                <h1>
-                    Lotus
-                </h1>
-
-                <div class="project-info">
-                    2026<br>
-                    Short film
-                </div>
-
-                <div class="image-placeholder image-large">
-                    LOTUS / STILL 01
-                </div>
-
-                <div class="image-placeholder image-small">
-                    LOTUS / STILL 02
-                </div>
-
-                <div class="project-description">
-                    <p>
-                        A girl returns with her mother to their ancestral
-                        village to honor her grandmother.
-                    </p>
-                </div>
-
-            </article>
-
-
-            <!-- 002 -->
-
-            <article
-                class="project project-002"
-                id="letter"
-                data-project="002"
-            >
-
-                <div class="project-number">
-                    002:
-                </div>
-
-                <h1>
-                    A Letter for<br>
-                    Netoсhka<br>
-                    Nezvanova
-                </h1>
-
-                <div class="project-info">
-                    Film / Moving Image
-                </div>
-
-                <div class="image-placeholder image-medium">
-                    A LETTER / STILL
-                </div>
-
-            </article>
-
-
-            <!-- 003 -->
-
-            <article
-                class="project project-003"
-                id="double-memory"
-                data-project="003"
-            >
-
-                <div class="project-number">
-                    003:
-                </div>
-
-                <h1>
-                    My Double Memory
-                </h1>
-
-                <div class="image-placeholder image-wide">
-                    MY DOUBLE MEMORY / STILL
-                </div>
-
-                <div class="project-info">
-                    Film / Research
-                </div>
-
-            </article>
-
-
-            <!-- 004 -->
-
-            <article
-                class="project project-004"
-                id="jiaji"
-                data-project="004"
-            >
-
-                <div class="project-number">
-                    004:
-                </div>
-
-                <h1>
-                    I Am Not Jiaji
-                </h1>
-
-                <div class="image-placeholder image-small">
-                    I AM NOT JIAJI / STILL
-                </div>
-
-            </article>
-
-        </section>
-
-
-        <!-- =====================================================
-             COSMIC FIELD
-             ===================================================== -->
-
-        <section
-            class="section cosmic-field"
-            id="cosmic-field"
-            data-unit="cosmic"
-            data-threshold-depth="1"
-        >
-
-            <div class="section-title">
-                Cosmic field
-            </div>
-
+            <div class="section-title">Cosmic field</div>
 
             <div class="cosmic-intro">
-
                 <span class="cosmic-intro-line"></span>
-
-                <p>
-                    A field of fragments,
-                    images and places
-                    that remain without a fixed center.
-                </p>
-
+                <p>A field of images, places and fragments before the work takes form.</p>
                 <span class="cosmic-intro-line"></span>
-
             </div>
 
+            <article class="photo-project" id="lost-city">
 
-            <article
-                class="photo-project"
-                id="lost-city"
-                data-project="cosmic-01"
-            >
+                <div class="project-number">01:</div>
 
-                <div class="project-number">
-                    01:
+                <div class="cosmic-gallery" id="cosmic-gallery">
+
+                    <figure class="cosmic-gallery-slide is-current">
+                        <div class="cosmic-image image-placeholder">
+                            PHOTOGRAPH / 01
+                        </div>
+                        <figcaption>
+                            <span>A Lost City Where I Call Home</span>
+                            <span>01 / 03</span>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="cosmic-gallery-slide">
+                        <div class="cosmic-image image-placeholder">
+                            PHOTOGRAPH / 02
+                        </div>
+                        <figcaption>
+                            <span>A Lost City Where I Call Home</span>
+                            <span>02 / 03</span>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="cosmic-gallery-slide">
+                        <div class="cosmic-image image-placeholder">
+                            PHOTOGRAPH / 03
+                        </div>
+                        <figcaption>
+                            <span>A Lost City Where I Call Home</span>
+                            <span>03 / 03</span>
+                        </figcaption>
+                    </figure>
+
                 </div>
 
-                <h1>
-                    A Lost City Where<br>
-                    I Call Home
-                </h1>
+                <div class="gallery-hint">drag / scroll horizontally</div>
 
-
-                <div class="image-placeholder image-cosmic">
-                    PHOTOGRAPH / 01
-                </div>
-
-
-                <div class="image-placeholder image-cosmic-small">
-                    PHOTOGRAPH / 02
-                </div>
-
-
-                <div class="image-placeholder image-cosmic-small">
-                    PHOTOGRAPH / 03
-                </div>
-
-
-                <!-- Optional future floating image layer -->
-                <div
-                    class="cosmic-floating-fragment"
-                    aria-hidden="true"
-                >
-                    <span></span>
+                <!-- THRESHOLD TO UNIT 02 -->
+                <div class="cosmic-gateway-wrap">
+                    <button id="cosmic-gateway" class="cosmic-gateway" type="button" aria-label="Enter Projects">
+                        <span class="gateway-orbit gateway-orbit-01"></span>
+                        <span class="gateway-orbit gateway-orbit-02"></span>
+                        <span class="gateway-core"></span>
+                    </button>
+                    <span class="gateway-label">enter projects</span>
                 </div>
 
             </article>
@@ -419,200 +923,159 @@
         </section>
 
 
-        <!-- =====================================================
-             WRITING ON THE BODY
-             ===================================================== -->
+        <!-- =================================================
+             UNIT 02 — PROJECTS
+             Vertical sequence, four works
+             ================================================= -->
 
-        <section
-            class="section writing"
-            id="writing"
-            data-unit="writing"
-            data-threshold-depth="3"
-        >
+        <section class="section projects" id="projects" data-unit="projects">
 
-            <div class="section-title">
-                Writing on the body
-            </div>
+            <div class="section-title">Projects</div>
 
-
-            <!-- Invisible / floating visual field -->
-
-            <div
-                class="body-space"
-                aria-hidden="true"
-            >
-
-                <div class="body-silhouette">
-
-                    <span class="body-fragment body-fragment-01"></span>
-                    <span class="body-fragment body-fragment-02"></span>
-                    <span class="body-fragment body-fragment-03"></span>
-
+            <article class="project project-001" id="lotus">
+                <div class="project-number">001:</div>
+                <h1>Lotus</h1>
+                <div class="project-info">2026<br>Short film</div>
+                <div class="image-placeholder image-large">LOTUS / STILL 01</div>
+                <div class="image-placeholder image-small">LOTUS / STILL 02</div>
+                <div class="project-description">
+                    <p>A girl returns with her mother to their ancestral village to honor her grandmother.</p>
                 </div>
+            </article>
 
-                <span class="body-light"></span>
+            <article class="project project-002" id="letter">
+                <div class="project-number">002:</div>
+                <h1>A Letter for<br>Netoсhka<br>Nezvanova</h1>
+                <div class="project-info">Film / Moving Image</div>
+                <div class="image-placeholder image-medium">A LETTER / STILL</div>
+            </article>
 
-            </div>
+            <article class="project project-003" id="double-memory">
+                <div class="project-number">003:</div>
+                <h1>My Double Memory</h1>
+                <div class="image-placeholder image-wide">MY DOUBLE MEMORY / STILL</div>
+                <div class="project-info">Film / Research</div>
+            </article>
 
+            <article class="project project-004" id="jiaji">
+                <div class="project-number">004:</div>
+                <h1>I Am Not Jiaji</h1>
+                <div class="image-placeholder image-small">I AM NOT JIAJI / STILL</div>
+            </article>
+
+            <!-- Sentinel for the body transition -->
+            <div id="writing-threshold-sentinel" aria-hidden="true"></div>
+
+        </section>
+
+
+        <!-- TRANSITION: PROJECTS -> WRITING ON MY BODY -->
+
+        <div id="writing-threshold" aria-hidden="true">
+            <svg class="body-threshold-line" viewBox="0 0 240 500" preserveAspectRatio="xMidYMid meet">
+                <circle class="body-line body-head" cx="120" cy="48" r="22"></circle>
+                <path class="body-line" d="M96 76 C82 91 76 112 74 138 C71 168 82 192 93 214 C101 231 104 252 101 279 C98 312 88 350 81 391"></path>
+                <path class="body-line" d="M144 76 C158 91 164 112 166 138 C169 168 158 192 147 214 C139 231 136 252 139 279 C142 312 152 350 159 391"></path>
+                <path class="body-line" d="M74 138 C91 147 149 147 166 138"></path>
+                <path class="body-line" d="M93 214 C108 226 132 226 147 214"></path>
+                <path class="body-line" d="M101 279 C112 286 128 286 139 279"></path>
+                <path class="body-line" d="M81 391 C101 405 139 405 159 391"></path>
+            </svg>
+        </div>
+
+
+        <!-- =================================================
+             UNIT 03 — WRITING ON MY BODY
+             Floating fragments
+             ================================================= -->
+
+        <section class="section writing" id="writing" data-unit="writing">
+
+            <div class="section-title">Writing on my body</div>
+
+            <div class="writing-orbit writing-orbit-01"></div>
+            <div class="writing-orbit writing-orbit-02"></div>
+            <div class="writing-mark">03</div>
 
             <div class="writing-fragment fragment-01">
-                I remember the body<br>
-                before I remember<br>
-                the room.
+                我记得自己诞生在一群跳动的白色粒子之间<br>
+                世界是黑色的<br>
+                如同精疲力竭那样的黑白<br>
+                蕴含多变的活力
             </div>
-
 
             <div class="writing-fragment fragment-02">
-                The distance between<br>
-                two people is sometimes<br>
-                measured by language.
+                记忆里有轻盈飘渺的蚊帐<br>
+                冰凉的竹椅<br>
+                竹床<br>
+                温热的躯体
             </div>
-
 
             <div class="writing-fragment fragment-03">
                 Memory does not stay<br>
                 where we leave it.
             </div>
 
-
-            <div class="writing-fragment fragment-04">
-                ...
-            </div>
-
-
-            <!--
-                Hidden trigger.
-                Later this can become a photographic body,
-                a fragment of skin, a silhouette,
-                or another visual threshold.
-            -->
-
-            <button
-                id="body-trigger"
-                type="button"
-                title="Enter the body"
-                aria-label="Enter the writing on the body"
-            >
-                <span class="body-trigger-light"></span>
-                <span class="body-trigger-core"></span>
-            </button>
+            <div class="writing-fragment fragment-04">...</div>
 
         </section>
 
 
-        <!-- =====================================================
-             ABOUT
-             ===================================================== -->
+        <!-- =================================================
+             ABOUT / CONTACT / SUMMARY
+             One final simple surface
+             ================================================= -->
 
-        <section
-            class="section about"
-            id="about"
-            data-unit="about"
-        >
+        <section class="section final-space" id="final-space">
 
-            <div class="section-title">
-                About
+            <div class="section-title">About / Contact</div>
+
+            <div class="final-grid">
+
+                <div class="final-block" id="about">
+                    <div class="final-label">About</div>
+                    <div class="about-text">
+                        <p>Isa Wu is a filmmaker and artist working across film, moving image and writing.</p>
+                        <p>Her work explores memory, space, intimacy, bodies and forms of haunting.</p>
+                    </div>
+                </div>
+
+                <div class="final-block" id="contact">
+                    <div class="final-label">Contact</div>
+                    <div class="contact-info">
+                        <a href="mailto:your@email.com">your@email.com</a>
+                        <a href="#">Instagram</a>
+                        <a href="#">Vimeo</a>
+                    </div>
+                </div>
+
             </div>
 
-
-            <div class="about-text">
-
-                <p>
-                    Isa Wu is a filmmaker and artist working
-                    across film, moving image and writing.
-                </p>
-
-                <p>
-                    Her work explores memory, space,
-                    intimacy, bodies and forms of haunting.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             CONTACT
-             ===================================================== -->
-
-        <section
-            class="section contact"
-            id="contact"
-            data-unit="contact"
-        >
-
-            <div class="section-title">
-                Contact
-            </div>
-
-
-            <div class="contact-info">
-
-                <a href="mailto:your@email.com">
-                    your@email.com
-                </a>
-
-                <br><br>
-
-                <a href="#">
-                    Instagram
-                </a>
-
-                <br>
-
-                <a href="#">
-                    Vimeo
-                </a>
-
+            <div class="final-summary">
+                Film / Moving Image / Writing / Image
             </div>
 
         </section>
-
-
-        <!-- =====================================================
-             GLOBAL THRESHOLD TRANSITION LAYERS
-             ===================================================== -->
-
-        <div
-            id="threshold-transition"
-            aria-hidden="true"
-        >
-
-            <div class="transition-orbit"></div>
-
-            <div class="transition-flash"></div>
-
-            <div class="transition-shadow"></div>
-
-            <div class="transition-noise"></div>
-
-        </div>
-
 
     </main>
 
 
-    <!-- =========================================================
-         FOOTER
-         ========================================================= -->
+    <!-- =====================================================
+         CLOSING THRESHOLD
+         Returns to the same first black screen
+         ===================================================== -->
 
-    <footer>
+    <footer id="closing-threshold" class="closing-threshold">
 
-        <span>
-            Isa Wu
-        </span>
+        <button id="closing-dot" type="button" aria-label="Return to threshold">
+            <span class="closing-dot-core"></span>
+            <span class="closing-dot-glow"></span>
+        </button>
 
-        <span>
-            2026
-        </span>
+        <span class="closing-year">Isa Wu · 2026</span>
 
     </footer>
 
-
-    <!-- =========================================================
-         SCRIPT
-         ========================================================= -->
 
     <script src="script.js"></script>
 
