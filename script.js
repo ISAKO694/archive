@@ -1,310 +1,214 @@
-document.addEventListener("DOMContentLoaded", () => {
+/* =========================================================
+   ISA WU — THRESHOLD
+========================================================= */
 
 
-    /* =========================================================
-       THRESHOLD ENTRY
-    ========================================================== */
+/* =========================================================
+   THRESHOLD INTRO
+========================================================= */
 
-    const body = document.body;
+const thresholdOverlay =
+    document.getElementById("threshold-overlay");
 
-    const thresholdGate =
-        document.getElementById("thresholdGate");
+const thresholdDot =
+    document.getElementById("threshold-dot");
 
-    const thresholdTrigger =
-        document.getElementById("thresholdTrigger");
-
-    const thresholdTransition =
-        document.getElementById("thresholdTransition");
+const cursorLight =
+    document.getElementById("cursor-light");
 
 
-    if (thresholdTrigger) {
+/* ---------------------------------------------------------
+   Cursor light
+--------------------------------------------------------- */
 
-        thresholdTrigger.addEventListener("click", () => {
+if (thresholdOverlay && cursorLight) {
 
-            thresholdTransition.classList.add("expand");
+    window.addEventListener("mousemove", (event) => {
 
-            body.classList.remove("threshold-locked");
+        cursorLight.style.left =
+            event.clientX + "px";
 
-            body.classList.add("threshold-opening");
+        cursorLight.style.top =
+            event.clientY + "px";
 
+    });
 
-            setTimeout(() => {
-
-                body.classList.remove("threshold-opening");
-
-                body.classList.add("threshold-open");
-
-                window.scrollTo({
-                    top: 0,
-                    behavior: "instant"
-                });
-
-            }, 550);
-
-        });
-
-    }
+}
 
 
+/* ---------------------------------------------------------
+   Enter the website
+--------------------------------------------------------- */
 
-    /* =========================================================
-       CURSOR LIGHT
-    ========================================================== */
+if (thresholdDot) {
 
-    const cursorLight =
-        document.getElementById("cursorLight");
+    thresholdDot.addEventListener("click", () => {
 
-
-    if (cursorLight && window.innerWidth > 850) {
-
-        let mouseX = 0;
-        let mouseY = 0;
-
-        let currentX = 0;
-        let currentY = 0;
-
-
-        document.addEventListener("mousemove", (event) => {
-
-            mouseX = event.clientX;
-            mouseY = event.clientY;
-
-        });
-
-
-        function moveCursorLight() {
-
-            currentX +=
-                (mouseX - currentX) * 0.09;
-
-            currentY +=
-                (mouseY - currentY) * 0.09;
-
-
-            cursorLight.style.transform =
-                `translate(${currentX}px, ${currentY}px)`;
-
-
-            requestAnimationFrame(moveCursorLight);
-
-        }
-
-
-        moveCursorLight();
-
-    }
-
-
-
-    /* =========================================================
-       GRAPHIC THRESHOLD LINKS
-    ========================================================== */
-
-    const graphicTriggers =
-        document.querySelectorAll(
-            ".graphic-trigger"
+        document.body.classList.add(
+            "threshold-entering"
         );
 
+        setTimeout(() => {
 
-    graphicTriggers.forEach((trigger) => {
+            document.body.classList.remove(
+                "threshold-entering"
+            );
 
-        trigger.addEventListener("click", () => {
+            document.body.classList.add(
+                "threshold-complete"
+            );
 
-            const target =
-                trigger.dataset.target;
+        }, 1250);
 
+    });
 
-            const targetElement =
-                document.querySelector(target);
-
-
-            if (!targetElement) {
-                return;
-            }
-
-
-            /*
-             * Small visual change before
-             * entering the next unit.
-             */
-
-            trigger.classList.add("triggering");
+}
 
 
-            setTimeout(() => {
+/* =========================================================
+   MOBILE INDEX
+========================================================= */
 
-                targetElement.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
+const indexButton =
+    document.getElementById("indexButton");
 
-                trigger.classList.remove("triggering");
+const indexMenu =
+    document.getElementById("indexMenu");
 
-            }, 220);
 
-        });
+if (indexButton && indexMenu) {
+
+    indexButton.addEventListener("click", () => {
+
+        indexMenu.classList.toggle("open");
 
     });
 
 
+    indexMenu
+        .querySelectorAll("a")
+        .forEach((link) => {
 
-    /* =========================================================
-       MOBILE INDEX
-    ========================================================== */
+            link.addEventListener("click", () => {
 
-    const indexButton =
-        document.getElementById("indexButton");
-
-    const indexMenu =
-        document.getElementById("indexMenu");
-
-
-    if (indexButton && indexMenu) {
-
-        indexButton.addEventListener("click", () => {
-
-            indexMenu.classList.toggle("open");
-
-        });
-
-
-        indexMenu
-            .querySelectorAll("a")
-            .forEach((link) => {
-
-                link.addEventListener("click", () => {
-
-                    indexMenu.classList.remove("open");
-
-                });
+                indexMenu.classList.remove(
+                    "open"
+                );
 
             });
 
-    }
+        });
+
+}
 
 
+/* =========================================================
+   COSMIC GALLERY
+   Mouse drag + touch
+========================================================= */
 
-    /* =========================================================
-       ACTIVE NAVIGATION
-    ========================================================== */
-
-    const allSections =
-        document.querySelectorAll(
-            "main section[id]"
-        );
-
-
-    const sideLinks =
-        document.querySelectorAll(
-            ".side-nav a[href^='#']"
-        );
+const galleries =
+    document.querySelectorAll(
+        ".cosmic-gallery"
+    );
 
 
-    const sectionObserver =
-        new IntersectionObserver(
-            (entries) => {
+galleries.forEach((gallery) => {
 
-                entries.forEach((entry) => {
+    let isDown = false;
 
-                    if (!entry.isIntersecting) {
-                        return;
-                    }
+    let startX = 0;
+
+    let scrollLeft = 0;
 
 
-                    const id =
-                        entry.target.id;
+    gallery.addEventListener(
+        "mousedown",
+        (event) => {
+
+            isDown = true;
+
+            gallery.classList.add(
+                "is-dragging"
+            );
+
+            startX =
+                event.pageX -
+                gallery.offsetLeft;
+
+            scrollLeft =
+                gallery.scrollLeft;
+
+        }
+    );
 
 
-                    sideLinks.forEach((link) => {
-
-                        link.classList.remove(
-                            "active"
-                        );
-
-
-                        if (
-                            link.getAttribute("href")
-                            === `#${id}`
-                        ) {
-
-                            link.classList.add(
-                                "active"
-                            );
-
-                        }
-
-                    });
-
-                });
-
-            },
-            {
-                rootMargin:
-                    "-35% 0px -55% 0px"
-            }
-        );
-
-
-    allSections.forEach((section) => {
-
-        sectionObserver.observe(section);
-
-    });
-
-
-
-    /* =========================================================
-       SUBTLE SCROLL MOVEMENT
-    ========================================================== */
-
-    const cosmicImages =
-        document.querySelectorAll(
-            ".image-placeholder"
-        );
-
-
-    window.addEventListener(
-        "scroll",
+    gallery.addEventListener(
+        "mouseleave",
         () => {
 
-            const scrollY =
-                window.scrollY;
+            isDown = false;
 
-
-            cosmicImages.forEach(
-                (image, index) => {
-
-                    const rect =
-                        image.getBoundingClientRect();
-
-
-                    if (
-                        rect.bottom > 0 &&
-                        rect.top < window.innerHeight
-                    ) {
-
-                        const center =
-                            rect.top +
-                            rect.height / 2;
-
-
-                        const distance =
-                            (center -
-                                window.innerHeight / 2) /
-                            window.innerHeight;
-
-
-                        const amount =
-                            distance * 5;
-
-
-                        image.style.transform =
-                            `translateY(${amount}px)`;
-
-                    }
-
-                }
+            gallery.classList.remove(
+                "is-dragging"
             );
+
+        }
+    );
+
+
+    gallery.addEventListener(
+        "mouseup",
+        () => {
+
+            isDown = false;
+
+            gallery.classList.remove(
+                "is-dragging"
+            );
+
+        }
+    );
+
+
+    gallery.addEventListener(
+        "mousemove",
+        (event) => {
+
+            if (!isDown) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const x =
+                event.pageX -
+                gallery.offsetLeft;
+
+            const walk =
+                (x - startX) * 1.2;
+
+            gallery.scrollLeft =
+                scrollLeft - walk;
+
+        }
+    );
+
+
+    let touchStart = 0;
+
+    let touchScroll = 0;
+
+
+    gallery.addEventListener(
+        "touchstart",
+        (event) => {
+
+            touchStart =
+                event.touches[0].pageX;
+
+            touchScroll =
+                gallery.scrollLeft;
 
         },
         {
@@ -313,39 +217,319 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    gallery.addEventListener(
+        "touchmove",
+        (event) => {
 
-    /* =========================================================
-       WRITING FRAGMENTS
-    ========================================================== */
+            const current =
+                event.touches[0].pageX;
 
-    const writingFragments =
-        document.querySelectorAll(
-            ".writing-fragment"
-        );
+            const difference =
+                current - touchStart;
 
+            gallery.scrollLeft =
+                touchScroll - difference;
 
-    writingFragments.forEach((fragment) => {
-
-        fragment.addEventListener(
-            "mouseenter",
-            () => {
-
-                fragment.style.opacity = "1";
-
-            }
-        );
-
-
-        fragment.addEventListener(
-            "mouseleave",
-            () => {
-
-                fragment.style.opacity = "";
-
-            }
-        );
-
-    });
-
+        },
+        {
+            passive: true
+        }
+    );
 
 });
+
+
+/* =========================================================
+   SPACE GATEWAYS
+========================================================= */
+
+const projectsGateway =
+    document.getElementById(
+        "projectsGateway"
+    );
+
+const writingGateway =
+    document.getElementById(
+        "writingGateway"
+    );
+
+
+function enterSpace(trigger, target) {
+
+    if (!trigger || !target) {
+        return;
+    }
+
+
+    trigger.classList.add(
+        "triggering"
+    );
+
+
+    setTimeout(() => {
+
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+
+        setTimeout(() => {
+
+            trigger.classList.remove(
+                "triggering"
+            );
+
+        }, 800);
+
+    }, 180);
+
+}
+
+
+/* ---------------------------------------------------------
+   Cosmic Field → Projects
+--------------------------------------------------------- */
+
+if (projectsGateway) {
+
+    projectsGateway.addEventListener(
+        "click",
+        () => {
+
+            const projects =
+                document.getElementById(
+                    "projects"
+                );
+
+            enterSpace(
+                projectsGateway,
+                projects
+            );
+
+        }
+    );
+
+}
+
+
+/* ---------------------------------------------------------
+   Projects → Writing
+--------------------------------------------------------- */
+
+if (writingGateway) {
+
+    writingGateway.addEventListener(
+        "click",
+        () => {
+
+            const writing =
+                document.getElementById(
+                    "writing"
+                );
+
+            enterSpace(
+                writingGateway,
+                writing
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   WRITING WATER MOVEMENT
+========================================================= */
+
+const writingSection =
+    document.getElementById(
+        "writing"
+    );
+
+const writingFragments =
+    document.querySelectorAll(
+        ".writing-fragment"
+    );
+
+
+if (
+    writingSection &&
+    writingFragments.length
+) {
+
+    let ticking = false;
+
+
+    window.addEventListener(
+        "scroll",
+        () => {
+
+            if (ticking) {
+                return;
+            }
+
+
+            window.requestAnimationFrame(
+                () => {
+
+                    const rect =
+                        writingSection
+                            .getBoundingClientRect();
+
+
+                    const viewport =
+                        window.innerHeight;
+
+
+                    if (
+                        rect.bottom < 0 ||
+                        rect.top > viewport
+                    ) {
+
+                        ticking = false;
+
+                        return;
+                    }
+
+
+                    const progress =
+                        (
+                            viewport -
+                            rect.top
+                        ) /
+                        (
+                            viewport +
+                            rect.height
+                        );
+
+
+                    writingFragments.forEach(
+                        (fragment, index) => {
+
+                            const movement =
+                                Math.sin(
+                                    progress * 6 +
+                                    index * 1.8
+                                ) * 3;
+
+
+                            fragment.style.marginTop =
+                                movement + "px";
+
+                        }
+                    );
+
+
+                    ticking = false;
+
+                }
+            );
+
+
+            ticking = true;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SIDEBAR ACTIVE STATES
+========================================================= */
+
+const sections =
+    document.querySelectorAll(
+        "section[id], article[id]"
+    );
+
+const navLinks =
+    document.querySelectorAll(
+        ".side-nav a"
+    );
+
+
+const observer =
+    new IntersectionObserver(
+        (entries) => {
+
+            entries.forEach((entry) => {
+
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+
+                const id =
+                    entry.target.id;
+
+
+                navLinks.forEach((link) => {
+
+                    link.classList.remove(
+                        "is-active"
+                    );
+
+
+                    if (
+                        link.getAttribute(
+                            "href"
+                        ) === "#" + id
+                    ) {
+
+                        link.classList.add(
+                            "is-active"
+                        );
+
+                    }
+
+                });
+
+            });
+
+        },
+        {
+            rootMargin:
+                "-35% 0px -55% 0px"
+        }
+    );
+
+
+sections.forEach((section) => {
+
+    observer.observe(section);
+
+});
+
+
+/* =========================================================
+   CLOSING DOT
+   Return to top / threshold
+========================================================= */
+
+const closingDot =
+    document.getElementById(
+        "closing-dot"
+    );
+
+
+if (closingDot) {
+
+    closingDot.addEventListener(
+        "click",
+        () => {
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+}
