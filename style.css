@@ -1059,16 +1059,23 @@ body.gateway-opening main { filter: blur(1px); }
 
 
 /* =========================================================
-   SPACE ARCHITECTURE
-   THRESHOLD / INDEPENDENT ROOMS
-   ---------------------------------------------------------
-   This layer changes spatial behavior only.
-   Existing visual design above remains intact.
+   ISA WU — THRESHOLD / ROOM ARCHITECTURE
+   SPATIAL SYSTEM ONLY
+
+   IMPORTANT:
+   Existing visual styles above remain unchanged.
+
+   Logic:
+   - The website has independent rooms.
+   - Each room occupies the same viewport.
+   - Each room may have its own natural content height.
+   - Scrolling happens INSIDE the active room.
+   - Gateways live at the end of each room.
 ========================================================= */
 
 
 /* =========================================================
-   01. GLOBAL ROOM BEHAVIOUR
+   01. GLOBAL
 ========================================================= */
 
 html,
@@ -1083,13 +1090,13 @@ body {
 
 
 /* =========================================================
-   02. MAIN = FIXED BUILDING
-   The website itself stops being one long scrolling page.
+   02. MAIN = BUILDING / ROOM CONTAINER
 ========================================================= */
 
 main#top {
     position: fixed;
     inset: 0;
+
     width: auto;
     height: 100vh;
 
@@ -1100,26 +1107,30 @@ main#top {
     transition:
         opacity .7s ease,
         filter .7s ease,
-        transform .9s cubic-bezier(.77,0,.175,1);
+        transform 1s cubic-bezier(.77,0,.175,1);
 }
 
 
 /* =========================================================
-   03. EACH SECTION BECOMES AN INDEPENDENT ROOM
-
-   All rooms occupy exactly the same physical space.
-   Only the current room is visible.
+   03. EACH SECTION = INDEPENDENT ROOM
 ========================================================= */
 
 main#top > .section {
+
     position: absolute;
 
     left: 0;
     top: 0;
 
     width: 100%;
-    height: 100vh;
-    min-height: 100vh;
+
+    /*
+       The room occupies the viewport,
+       but its content is allowed to extend vertically.
+    */
+
+    min-height: 100%;
+    max-height: 100%;
 
     margin: 0;
 
@@ -1127,35 +1138,49 @@ main#top > .section {
     visibility: hidden;
     pointer-events: none;
 
-    transform: scale(1.025);
-    filter: blur(5px);
+    transform: scale(1.018);
+    filter: blur(4px);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        rgba(239,239,235,.16)
+        transparent;
 
     transition:
         opacity .8s ease,
         transform 1s cubic-bezier(.77,0,.175,1),
         filter .8s ease,
         visibility 0s linear .8s;
-
-    /*
-       This is important:
-       scrolling belongs to the room itself.
-    */
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    overscroll-behavior: contain;
-
-    scrollbar-width: none;
 }
+
+
+/* Chrome / Safari scrollbar */
 
 main#top > .section::-webkit-scrollbar {
-    display: none;
+    width: 4px;
+}
+
+main#top > .section::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+main#top > .section::-webkit-scrollbar-thumb {
+    background: rgba(239,239,235,.14);
+    border-radius: 10px;
 }
 
 
-/* Active room */
+/* =========================================================
+   04. ACTIVE ROOM
+========================================================= */
 
 main#top > .section.is-room-active {
+
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -1172,181 +1197,678 @@ main#top > .section.is-room-active {
 
 
 /* =========================================================
-   04. COSMIC FIELD = CLOSED ROOM
+   05. ROOM INTERNAL PADDING
 
-   No vertical page movement.
-   Only the internal image gallery moves.
+   This gives each room enough breathing space without
+   changing your visual language.
+========================================================= */
+
+main#top > .section {
+
+    padding-top: clamp(80px, 8vh, 110px);
+
+    padding-left: clamp(28px, 6vw, 100px);
+    padding-right: clamp(28px, 6vw, 100px);
+
+    padding-bottom:
+        clamp(140px, 18vh, 240px);
+}
+
+
+/* =========================================================
+   06. COSMIC FIELD
+   CLOSED ROOM
+   ---------------------------------------------------------
+   Cosmic itself does not vertically scroll.
+   The gallery remains horizontal.
 ========================================================= */
 
 main#top > .cosmic-field {
+
     overflow: hidden;
+
+    height: 100%;
+    min-height: 100%;
+    max-height: 100%;
+
+    padding-bottom: 0;
 }
 
 
-/* Preserve your existing Cosmic layout */
+/* ---------------------------------------------------------
+   Cosmic content area
 
-.cosmic-field {
-    height: 100vh;
-    min-height: 100vh;
+   Reserve a lower "floor" for the gateway.
+--------------------------------------------------------- */
+
+.cosmic-field .photo-project {
+
+    position: relative;
+
+    min-height: 0;
+
+    height: calc(100vh - 250px);
+
+    margin-bottom: 150px;
+}
+
+
+/* Gallery occupies the visual field */
+
+.cosmic-field .cosmic-gallery {
+
+    height: 100%;
+}
+
+
+/* ---------------------------------------------------------
+   COSMIC GATEWAY
+   The gateway lives in a dedicated lower zone,
+   rather than sitting on top of the images.
+--------------------------------------------------------- */
+
+.cosmic-field .cosmic-gateway-wrap {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: -145px;
+
+    width: 100%;
+
+    min-height: 170px;
+
+    margin: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+}
+
+
+/* Keep the gateway small and spatial */
+
+.cosmic-field .cosmic-gateway {
+    flex-shrink: 0;
 }
 
 
 /* =========================================================
-   05. PROJECTS = SECOND ROOM
+   07. PROJECTS
+   ---------------------------------------------------------
+   Projects is a true vertical room.
 
-   The four projects live inside this room.
-   Vertical scrolling happens only here.
+   Content determines how long the room feels.
 ========================================================= */
 
 main#top > .projects {
+
     overflow-y: auto;
     overflow-x: hidden;
+
+    height: 100%;
+    max-height: 100%;
+}
+
+
+/* ---------------------------------------------------------
+   Project spacing
+
+   More generous than before.
+--------------------------------------------------------- */
+
+.projects .project {
+
+    min-height:
+        clamp(700px, 88vh, 950px);
+
+    margin-bottom:
+        clamp(100px, 13vh, 170px);
 }
 
 
 /* =========================================================
-   06. WRITING = THIRD ROOM
+   PROJECT 001
+   More flexible proportions
+========================================================= */
 
-   Writing is also independently scrollable.
+.project-001 {
+
+    min-height:
+        clamp(720px, 90vh, 960px);
+}
+
+
+.project-001 h1 {
+
+    left: 0;
+
+    top:
+        clamp(35px, 5vh, 65px);
+
+    font-size:
+        clamp(24px, 2.7vw, 40px);
+}
+
+
+.project-001 .project-info {
+
+    left: 0;
+
+    top:
+        clamp(90px, 12vh, 120px);
+}
+
+
+.project-001 .image-large {
+
+    width:
+        min(62%, 900px);
+
+    height:
+        clamp(430px, 58vh, 620px);
+
+    right: 0;
+
+    top:
+        clamp(140px, 17vh, 180px);
+}
+
+
+.project-001 .image-small {
+
+    width:
+        clamp(180px, 23%, 320px);
+
+    height:
+        clamp(180px, 25vh, 260px);
+
+    left: 3%;
+
+    bottom: 20px;
+}
+
+
+.project-001 .project-description {
+
+    width:
+        min(22%, 240px);
+
+    right: 0;
+
+    bottom: 25px;
+
+    font-size:
+        clamp(10px, .8vw, 12px);
+}
+
+
+/* =========================================================
+   PROJECT 002
+========================================================= */
+
+.project-002 {
+
+    min-height:
+        clamp(760px, 92vh, 980px);
+}
+
+
+.project-002 h1 {
+
+    left: 31%;
+
+    top:
+        clamp(45px, 7vh, 80px);
+
+    font-size:
+        clamp(24px, 2.55vw, 38px);
+}
+
+
+.project-002 .project-info {
+
+    left: 31%;
+
+    top:
+        clamp(175px, 20vh, 215px);
+}
+
+
+.project-002 .image-medium {
+
+    width:
+        clamp(330px, 38%, 560px);
+
+    height:
+        clamp(360px, 48vh, 520px);
+
+    left: 4%;
+
+    top:
+        clamp(285px, 33vh, 350px);
+}
+
+
+/* =========================================================
+   PROJECT 003
+========================================================= */
+
+.project-003 {
+
+    min-height:
+        clamp(720px, 88vh, 930px);
+}
+
+
+.project-003 h1 {
+
+    left: 0;
+
+    top:
+        clamp(45px, 7vh, 70px);
+}
+
+
+.project-003 .image-wide {
+
+    width:
+        min(72%, 1000px);
+
+    height:
+        clamp(390px, 55vh, 590px);
+
+    right: 0;
+
+    top:
+        clamp(170px, 24vh, 230px);
+}
+
+
+.project-003 .project-info {
+
+    left: 0;
+
+    bottom: 35px;
+}
+
+
+/* =========================================================
+   PROJECT 004
+========================================================= */
+
+.project-004 {
+
+    min-height:
+        clamp(600px, 72vh, 760px);
+
+    margin-bottom: 0;
+}
+
+
+.project-004 h1 {
+
+    left: 36%;
+
+    top:
+        clamp(50px, 8vh, 85px);
+}
+
+
+.project-004 .image-small {
+
+    width:
+        clamp(250px, 31%, 440px);
+
+    height:
+        clamp(300px, 40vh, 440px);
+
+    left: 7%;
+
+    top:
+        clamp(210px, 29vh, 300px);
+}
+
+
+/* =========================================================
+   08. PROJECTS -> WRITING GATEWAY
+
+   Important:
+   The gateway is below Project 004.
+   It has its own floor / breathing space.
+========================================================= */
+
+.projects .writing-gateway-wrap {
+
+    width: 100%;
+
+    min-height:
+        clamp(250px, 32vh, 340px);
+
+    margin-top:
+        clamp(90px, 14vh, 160px);
+
+    margin-bottom:
+        clamp(180px, 26vh, 300px);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+}
+
+
+/* This makes the transition point feel discovered,
+   not attached to the previous image. */
+
+.projects .writing-gateway-label {
+
+    margin-top: 18px;
+}
+
+
+/* =========================================================
+   09. WRITING
 ========================================================= */
 
 main#top > .writing {
+
     overflow-y: auto;
     overflow-x: hidden;
+
+    height: 100%;
+    max-height: 100%;
+}
+
+
+/* Allow the writing room to grow naturally */
+
+.writing {
+
+    min-height:
+        clamp(1250px, 145vh, 1650px);
+
+    height: auto;
+
+    padding-bottom:
+        clamp(220px, 30vh, 360px);
+}
+
+
+/* Keep original fragments but give them
+   slightly more space around them. */
+
+.fragment-01 {
+    top:
+        clamp(250px, 29vh, 320px);
+}
+
+.fragment-02 {
+    top:
+        clamp(500px, 55vh, 600px);
+}
+
+.fragment-03 {
+    top:
+        clamp(760px, 82vh, 880px);
+}
+
+.fragment-04 {
+    top:
+        clamp(1000px, 108vh, 1160px);
 }
 
 
 /* =========================================================
-   07. FINAL = FOURTH ROOM
+   10. WRITING -> FINAL GATEWAY
+
+   The doorway comes AFTER the textual field,
+   not beside it.
+========================================================= */
+
+.writing .final-gateway-wrap {
+
+    width: 100%;
+
+    min-height:
+        clamp(280px, 36vh, 420px);
+
+    margin-top:
+        clamp(160px, 22vh, 260px);
+
+    margin-bottom:
+        clamp(150px, 24vh, 300px);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   11. FINAL ROOM
 ========================================================= */
 
 main#top > .final-space {
+
     overflow-y: auto;
     overflow-x: hidden;
+
+    height: 100%;
+    max-height: 100%;
+
+    padding-bottom:
+        clamp(180px, 25vh, 300px);
+}
+
+
+/* Final content gets more breathing room */
+
+.final-grid {
+
+    width:
+        min(100%, 950px);
+
+    margin-left:
+        clamp(0px, 8vw, 120px);
+}
+
+
+.final-summary {
+
+    margin-top:
+        clamp(100px, 13vh, 150px);
 }
 
 
 /* =========================================================
-   08. ROOM TRANSITION
-
-   The room closes before another room opens.
+   12. ROOM TRANSITIONS
 ========================================================= */
 
 body.room-transition main#top {
+
     opacity: 0;
-    transform: scale(.985);
-    filter: blur(4px);
+
+    transform:
+        scale(.985);
+
+    filter:
+        blur(5px);
 }
 
 
-/* =========================================================
-   09. COSMIC -> PROJECTS
-   The planet becomes the actual door.
-========================================================= */
+/* Cosmic closing */
 
 body.cosmic-gateway-opening main#top {
-    opacity: .12;
-    transform: scale(.94);
-    filter: blur(7px);
-}
 
-body.cosmic-gateway-opening .cosmic-gateway {
-    animation:
-        gateway-collapse
-        .95s
-        cubic-bezier(.77,0,.175,1)
-        forwards;
+    opacity: .08;
+
+    transform:
+        scale(.96);
+
+    filter:
+        blur(7px);
 }
 
 
-/* =========================================================
-   10. PROJECTS -> WRITING
-   Existing body-line threshold stays visually unchanged.
-========================================================= */
+/* Writing closing */
 
 body.writing-gateway-opening main#top {
+
     opacity: .08;
-    transform: scale(1.015);
-    filter: blur(6px);
+
+    transform:
+        scale(1.01);
+
+    filter:
+        blur(7px);
 }
 
 
-/* =========================================================
-   11. WRITING -> FINAL
-========================================================= */
+/* Final closing */
 
 body.final-gateway-opening main#top {
+
     opacity: .08;
-    transform: scale(.985);
-    filter: blur(7px);
+
+    transform:
+        scale(.985);
+
+    filter:
+        blur(7px);
 }
 
 
 /* =========================================================
-   12. PROJECT GATEWAY
-   This is added after project 004.
-========================================================= */
-
-.writing-gateway-wrap {
-    width: 100%;
-    min-height: 260px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    margin-top: 100px;
-    margin-bottom: 100px;
-}
-
-
-/* =========================================================
-   13. FINAL GATEWAY
-========================================================= */
-
-.final-gateway-wrap {
-    width: 100%;
-    min-height: 280px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    margin-top: 140px;
-    margin-bottom: 120px;
-}
-
-
-/* =========================================================
-   14. NAVIGATION LOCK
-
-   Before the final room:
-   the Index exists structurally,
-   but the user has not unlocked it yet.
+   13. NAVIGATION
+   ---------------------------------------------------------
+   Hidden during the journey.
+   Revealed at the final room.
 ========================================================= */
 
 .sidebar {
+
     opacity: 0;
+
     pointer-events: none;
 
     transition:
-        opacity .8s ease,
-        transform .8s ease;
+        opacity .7s ease;
 }
 
 
 body.navigation-unlocked .sidebar {
+
     opacity: 1;
+
     pointer-events: auto;
 }
 
 
-/* =========================================================
-   15. ACTIVE ROOM INDICATORS
-   Only relevant once navigation is unlocked.
-========================================================= */
+/* ---------------------------------------------------------
+   When unlocked, sidebar becomes a compact top index.
+--------------------------------------------------------- */
+
+body.navigation-unlocked .sidebar {
+
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 52px;
+
+    padding:
+        0 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    border-right: none;
+
+    border-bottom:
+        1px solid
+        rgba(239,239,235,.12);
+
+    background:
+        rgba(5,6,6,.78);
+
+    backdrop-filter:
+        blur(12px);
+
+    z-index: 300;
+}
+
+
+body.navigation-unlocked .site-name {
+
+    margin:
+        0 32px 0 0;
+
+}
+
+
+body.navigation-unlocked .side-nav {
+
+    display: flex;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    gap: 24px;
+}
+
+
+body.navigation-unlocked .nav-group {
+
+    display: flex;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+/* Hide deep links in the unlocked top index */
+
+body.navigation-unlocked
+.nav-group > a:not(.nav-title) {
+
+    display: none;
+}
+
+
+/* Room titles become the navigation */
+
+body.navigation-unlocked
+.side-nav .nav-title {
+
+    color:
+        rgba(239,239,235,.55);
+
+    margin:
+        0;
+
+    font-size: 10px;
+}
+
+
+/* Active room */
 
 body.navigation-unlocked[data-room="cosmic"]
 .side-nav [data-unit-link="cosmic"],
@@ -1356,126 +1878,35 @@ body.navigation-unlocked[data-room="projects"]
 
 body.navigation-unlocked[data-room="writing"]
 .side-nav [data-unit-link="writing"] {
-    color: var(--white);
+
+    color:
+        var(--white);
 }
 
 
-/* =========================================================
-   16. WHEN NAVIGATION IS UNLOCKED
-       Sidebar becomes a small TOP INDEX.
-
-   This only happens after Room 04.
-========================================================= */
-
-body.navigation-unlocked .sidebar {
-
-    left: 0;
-    top: 0;
-
-    width: 100%;
-    height: 52px;
-
-    padding:
-        0
-        18px;
-
-    display: flex;
-    align-items: center;
-
-    border-right: none;
-    border-bottom: 1px solid rgba(239,239,235,.12);
-
-    background: rgba(5,6,6,.82);
-
-    backdrop-filter: blur(12px);
-}
-
-
-/* Isa Wu stays on the left */
-
-body.navigation-unlocked .site-name {
-    margin: 0 30px 0 0;
-}
-
-
-/* Navigation becomes horizontal */
-
-body.navigation-unlocked .side-nav {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    gap: 22px;
-
-    width: auto;
-}
-
-
-/* Each group becomes a compact item */
-
-body.navigation-unlocked .nav-group {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    gap: 10px;
-}
-
-
-/*
-   Keep the unit titles.
-   Hide the deep project links in the top bar.
-
-   The room itself remains the place
-   where the work is explored.
-*/
-
-body.navigation-unlocked
-.nav-group > a:not(.nav-title) {
-    display: none;
-}
-
-
-/* Remove the large sidebar spacing */
-
-body.navigation-unlocked .site-name {
-    font-size: 14px;
-}
-
-body.navigation-unlocked .side-nav a {
-    font-size: 10px;
-}
-
-
-/* =========================================================
-   17. MAIN SHIFTS BACK TO FULL WIDTH
-       after sidebar becomes top navigation.
-========================================================= */
+/* Since the navigation moved to the top,
+   remove the old left margin. */
 
 body.navigation-unlocked main#top {
+
     margin-left: 0;
 }
 
 
-/*
-   Give the room a little top breathing space
-   under the new top index.
-*/
-
 body.navigation-unlocked
 main#top > .section {
-    padding-top: 105px;
+
+    padding-top:
+        clamp(90px, 9vh, 115px);
 }
 
 
 /* =========================================================
-   18. FINAL ROOM / CLOSING THRESHOLD
-
-   The closing point becomes available only
-   after Room 04 has been unlocked.
+   14. CLOSING THRESHOLD
 ========================================================= */
 
 #closing-threshold {
+
     display: none;
 }
 
@@ -1492,36 +1923,31 @@ body.navigation-unlocked[data-room="final"]
     bottom: 0;
 
     width: 100%;
-    height: 72px;
-    min-height: 72px;
 
-    margin-left: 0;
+    height: 68px;
+    min-height: 68px;
 
-    z-index: 80;
+    margin: 0;
 
-    background: rgba(2,3,3,.78);
+    z-index: 250;
+
+    background:
+        rgba(2,3,3,.76);
 
     border-top:
         1px solid
         rgba(255,255,255,.08);
 
-    backdrop-filter: blur(10px);
+    backdrop-filter:
+        blur(10px);
 
-    pointer-events: auto;
-}
-
-
-/* Closing point remains visually tiny */
-
-body.navigation-unlocked[data-room="final"]
-#closing-dot {
-    width: 12px;
-    height: 12px;
+    align-items: center;
+    justify-content: center;
 }
 
 
 /* =========================================================
-   19. MOBILE
+   15. MOBILE
 ========================================================= */
 
 @media (max-width: 700px) {
@@ -1532,96 +1958,126 @@ body.navigation-unlocked[data-room="final"]
 
 
     main#top {
+
         margin-left: 0;
+
     }
 
 
     main#top > .section {
-        width: 100%;
-        height: 100vh;
-        min-height: 100vh;
 
-        padding-top: 80px;
+        width: 100%;
+
+        min-height: 100%;
+        max-height: 100%;
+
+        padding:
+            76px 15px 180px;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+
     }
 
 
-    /* Mobile rooms still remain separate */
+    /* Cosmic remains a closed visual room */
 
     main#top > .cosmic-field {
+
         overflow: hidden;
+
     }
 
 
-    main#top > .projects,
-    main#top > .writing,
-    main#top > .final-space {
+    /* Project room scrolls naturally */
+
+    main#top > .projects {
+
         overflow-y: auto;
-        overflow-x: hidden;
+
     }
 
 
-    /* Mobile header replaces desktop index */
+    /* Writing room */
 
-    .mobile-header {
-        opacity: 0;
-        pointer-events: none;
+    main#top > .writing {
 
-        transition: opacity .6s ease;
+        overflow-y: auto;
+
     }
 
 
-    body.navigation-unlocked .mobile-header {
-        opacity: 1;
-        pointer-events: auto;
+    /* Final room */
+
+    main#top > .final-space {
+
+        overflow-y: auto;
+
     }
 
 
-    .sidebar {
+    /* Gateway breathing room */
+
+    .projects .writing-gateway-wrap {
+
+        min-height:
+            250px;
+
+        margin-top:
+            80px;
+
+        margin-bottom:
+            180px;
+
+    }
+
+
+    .writing .final-gateway-wrap {
+
+        min-height:
+            260px;
+
+        margin-top:
+            130px;
+
+        margin-bottom:
+            180px;
+
+    }
+
+
+    /* Keep mobile index */
+
+    body.navigation-unlocked .sidebar {
+
         display: none;
+
     }
 
 
-    /*
-       Keep the existing mobile visual language.
-       Only change the navigation state.
-    */
+    body.navigation-unlocked main#top {
+
+        margin-left: 0;
+
+    }
+
 
     body.navigation-unlocked
     .mobile-header {
-        z-index: 200;
+
+        opacity: 1;
+
+        pointer-events: auto;
+
     }
 
-
-    /* Closing threshold */
 
     body.navigation-unlocked[data-room="final"]
     #closing-threshold {
-        left: 0;
-        height: 60px;
-        min-height: 60px;
-    }
 
-}
+        height: 56px;
+        min-height: 56px;
 
-
-/* =========================================================
-   20. REDUCED MOTION
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    main#top > .section {
-        transition:
-            opacity .2s ease,
-            visibility 0s;
-    }
-
-    body.room-transition main#top,
-    body.cosmic-gateway-opening main#top,
-    body.writing-gateway-opening main#top,
-    body.final-gateway-opening main#top {
-        transform: none;
-        filter: none;
     }
 
 }
