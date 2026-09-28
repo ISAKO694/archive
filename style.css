@@ -1,4 +1,24 @@
-ISA WU — THRESHOLD / THREE SPACES
+:root {
+
+    --paper: #e9e9e3;
+    --paper-soft: #efefe9;
+    --ink: #1d1e1b;
+    --soft-ink: #6c6d66;
+
+    --line: rgba(29, 30, 27, 0.18);
+
+    --sage: #aab5a0;
+    --blue: #afb9bc;
+    --sand: #c9bea7;
+    --moss: #788271;
+
+    --sidebar-width: 225px;
+
+}
+
+
+/* =========================================================
+   RESET
 ========================================================= */
 
 * {
@@ -9,2074 +29,2287 @@ html {
     scroll-behavior: smooth;
 }
 
-:root {
-    --black: #050606;
-    --black-2: #0a0b0b;
-    --black-3: #111212;
-    --white: #efefeb;
-    --white-soft: rgba(239,239,235,.68);
-    --white-faint: rgba(239,239,235,.28);
-    --line: rgba(239,239,235,.16);
-    --grey: #9b9c96;
-    --muted: #777872;
+html,
+body {
+    width: 100%;
+    min-height: 100%;
 }
 
 body {
+
     margin: 0;
-    background: var(--black);
-    color: var(--white);
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    line-height: 1.4;
+
+    color: var(--ink);
+
+    background:
+        radial-gradient(
+            circle at 74% 15%,
+            rgba(170, 181, 160, 0.16),
+            transparent 24%
+        ),
+        radial-gradient(
+            circle at 25% 72%,
+            rgba(175, 185, 188, 0.12),
+            transparent 25%
+        ),
+        var(--paper);
+
+    font-family:
+        "DM Mono",
+        monospace;
+
+    font-size: 12px;
+
+    line-height: 1.55;
+
     overflow-x: hidden;
-    transition: background 1s ease, color 1s ease;
+    overflow-y: auto;
+
+    min-height: 100vh;
+
 }
 
-button,
-a {
-    -webkit-tap-highlight-color: transparent;
-}
 
 /* =========================================================
-   THRESHOLD INTRO
+   FILM GRAIN
 ========================================================= */
 
-#threshold-overlay {
+body::before {
+
+    content: "";
+
     position: fixed;
+
     inset: 0;
+
+    pointer-events: none;
+
+    z-index: 100;
+
+    opacity: 0.045;
+
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+
+    mix-blend-mode: multiply;
+
+}
+
+
+/* =========================================================
+   THRESHOLD ENTRY
+========================================================= */
+
+.threshold-gate {
+
+    position: fixed;
+
+    inset: 0;
+
     z-index: 1000;
+
+    background: #050505;
+
+    overflow: hidden;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    background: radial-gradient(circle at center, #101212 0%, #070808 34%, #020303 100%);
-    cursor: crosshair;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 1.2s cubic-bezier(.77,0,.175,1), visibility 1.2s;
+
+    transition:
+        opacity 1.15s ease,
+        visibility 1.15s ease;
+
 }
 
-#threshold-overlay::before {
-    content: "";
-    position: absolute;
-    inset: -20%;
-    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.045), rgba(255,255,255,.018) 14%, transparent 36%);
-    animation: threshold-breath 5s ease-in-out infinite;
-}
 
-#threshold-overlay::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+body.threshold-open .threshold-gate {
+
+    opacity: 0;
+
+    visibility: hidden;
+
     pointer-events: none;
-    opacity: .055;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
-    mix-blend-mode: screen;
+
 }
 
-#cursor-light {
-    position: fixed;
-    width: 180px;
-    height: 180px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
+
+.threshold-atmosphere {
+
+    position: absolute;
+
+    width: 55vw;
+    height: 55vw;
+
     border-radius: 50%;
-    pointer-events: none;
-    background: radial-gradient(circle, rgba(255,255,255,.075) 0%, rgba(255,255,255,.025) 28%, transparent 70%);
-    opacity: .65;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0) 68%
+        );
+
+    filter: blur(25px);
+
 }
 
-#threshold-dot {
+
+.threshold-star-field span {
+
+    position: absolute;
+
+    width: 2px;
+    height: 2px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.7);
+
+    animation:
+        star-drift 8s infinite ease-in-out;
+
+}
+
+
+.threshold-star-field span:nth-child(1) {
+    top: 21%;
+    left: 30%;
+}
+
+.threshold-star-field span:nth-child(2) {
+    top: 67%;
+    left: 73%;
+    animation-delay: -2s;
+}
+
+.threshold-star-field span:nth-child(3) {
+    top: 35%;
+    left: 84%;
+    animation-delay: -4s;
+}
+
+.threshold-star-field span:nth-child(4) {
+    top: 78%;
+    left: 21%;
+    animation-delay: -6s;
+}
+
+
+@keyframes star-drift {
+
+    0%, 100% {
+        opacity: 0.15;
+        transform: translate(0, 0);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: translate(6px, -5px);
+    }
+
+}
+
+
+.threshold-trigger {
+
     position: relative;
-    width: 12px;
-    height: 12px;
-    padding: 0;
+
+    width: 86px;
+    height: 86px;
+
     border: 0;
+
     background: transparent;
-    border-radius: 50%;
+
+    padding: 0;
+
     cursor: pointer;
-    z-index: 3;
-    appearance: none;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
 }
 
-.threshold-dot-core {
+
+.threshold-core {
+
     position: absolute;
-    left: 50%;
-    top: 50%;
+
     width: 5px;
     height: 5px;
-    transform: translate(-50%,-50%);
-    background: #f3f3ef;
+
     border-radius: 50%;
-    box-shadow: 0 0 6px rgba(255,255,255,.75), 0 0 15px rgba(255,255,255,.25);
-    transition: transform .4s ease, box-shadow .4s ease;
+
+    background: white;
+
+    box-shadow:
+        0 0 8px rgba(255,255,255,0.95),
+        0 0 25px rgba(255,255,255,0.32);
+
+    transition:
+        transform 0.5s ease,
+        box-shadow 0.5s ease;
+
 }
 
-.threshold-dot-glow {
+
+.threshold-trigger:hover .threshold-core {
+
+    transform: scale(2.1);
+
+    box-shadow:
+        0 0 10px rgba(255,255,255,1),
+        0 0 38px rgba(255,255,255,0.4);
+
+}
+
+
+.threshold-ring {
+
     position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 80px;
-    height: 80px;
-    transform: translate(-50%,-50%);
+
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,.08), rgba(255,255,255,.025) 27%, transparent 70%);
-    opacity: .55;
-    transition: width .55s ease, height .55s ease, opacity .55s ease;
+
+    border: 1px solid rgba(255,255,255,0.12);
+
 }
 
-#threshold-dot:hover .threshold-dot-core {
-    transform: translate(-50%,-50%) scale(1.45);
-    box-shadow: 0 0 9px rgba(255,255,255,.9), 0 0 28px rgba(255,255,255,.35);
+
+.ring-one {
+    width: 26px;
+    height: 26px;
 }
 
-#threshold-dot:hover .threshold-dot-glow {
-    width: 130px;
-    height: 130px;
-    opacity: .9;
+.ring-two {
+    width: 48px;
+    height: 48px;
 }
 
-#threshold-ring,
-#threshold-light,
-#threshold-void {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    pointer-events: none;
+.ring-three {
+    width: 78px;
+    height: 78px;
+    border-color: rgba(255,255,255,0.07);
 }
 
-#threshold-ring {
-    width: 10px;
-    height: 10px;
-    transform: translate(-50%,-50%) scale(1);
-    border: 1px solid rgba(255,255,255,.25);
-    border-radius: 50%;
-    opacity: 0;
+
+.threshold-trigger:hover .ring-one {
+
+    transform: scale(1.35);
+
+    transition: transform 0.7s ease;
+
 }
 
-#threshold-light {
-    width: 4px;
-    height: 4px;
-    transform: translate(-50%,-50%);
-    opacity: 0;
+.threshold-trigger:hover .ring-two {
+
+    transform: scale(1.15);
+
+    transition: transform 1s ease;
+
 }
 
-#threshold-light span {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
-    display: block;
-    background: rgba(255,255,255,.25);
-    filter: blur(12px);
-    border-radius: 50%;
-}
-
-#threshold-light span:nth-child(1) { width: 260px; height: 260px; }
-#threshold-light span:nth-child(2) { width: 120px; height: 120px; }
-#threshold-light span:nth-child(3) { width: 40px; height: 40px; }
-
-#threshold-void {
-    width: 5px;
-    height: 5px;
-    transform: translate(-50%,-50%) scale(1);
-    border-radius: 50%;
-    background: #000;
-    opacity: 0;
-}
-
-#threshold-word {
-    position: absolute;
-    left: 50%;
-    top: calc(50% + 65px);
-    transform: translateX(-50%);
-    color: rgba(255,255,255,.3);
-    font-size: 8px;
-    letter-spacing: .4em;
-    text-indent: .4em;
-    font-family: monospace;
-    opacity: .6;
-}
-
-body.threshold-entering #threshold-dot { pointer-events: none; }
-body.threshold-entering .threshold-dot-core { transform: translate(-50%,-50%) scale(.4); box-shadow: 0 0 30px rgba(255,255,255,.9); }
-body.threshold-entering #threshold-ring { opacity: 1; animation: threshold-ring-expand 1.5s cubic-bezier(.77,0,.175,1) forwards; }
-body.threshold-entering #threshold-light { opacity: 1; animation: threshold-flash 1.25s cubic-bezier(.77,0,.175,1) forwards; }
-body.threshold-entering #threshold-void { opacity: 1; animation: threshold-collapse 1.25s cubic-bezier(.77,0,.175,1) forwards; }
-body.threshold-complete #threshold-overlay { opacity: 0; visibility: hidden; pointer-events: none; }
 
 /* =========================================================
-   ATMOSPHERE
+   CURSOR LIGHT
 ========================================================= */
 
-#site-atmosphere {
+.cursor-light {
+
     position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
-    opacity: 0;
-    transition: opacity 1.5s ease;
-}
 
-body.threshold-complete #site-atmosphere { opacity: 1; }
+    left: 0;
+    top: 0;
 
-.atmosphere-light {
-    position: absolute;
-    width: 45vw;
-    height: 45vw;
+    width: 150px;
+    height: 150px;
+
+    margin-left: -75px;
+    margin-top: -75px;
+
     border-radius: 50%;
-    filter: blur(100px);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,0.13),
+            rgba(255,255,255,0) 68%
+        );
+
+    filter: blur(8px);
+
+    pointer-events: none;
+
+    z-index: 95;
+
     opacity: 0;
+
+    transition:
+        opacity 0.4s ease;
+
 }
 
-.atmosphere-light-01 { left: 20%; top: 10%; background: radial-gradient(circle, rgba(125,130,124,.045), transparent 68%); }
-.atmosphere-light-02 { right: 0; bottom: 10%; background: radial-gradient(circle, rgba(200,210,200,.03), transparent 70%); }
-body.threshold-complete .atmosphere-light { opacity: 1; }
 
-.atmosphere-grain {
-    position: absolute;
-    inset: 0;
-    opacity: .02;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)' opacity='.7'/%3E%3C/svg%3E");
-    mix-blend-mode: screen;
+body.threshold-open .cursor-light {
+    opacity: 1;
 }
+
+
+/* =========================================================
+   PAGE TRANSITION
+========================================================= */
+
+.threshold-transition {
+
+    position: fixed;
+
+    left: 50%;
+    top: 50%;
+
+    width: 0;
+    height: 0;
+
+    border-radius: 50%;
+
+    background: #111;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 900;
+
+    pointer-events: none;
+
+}
+
+
+.threshold-transition.expand {
+
+    animation: threshold-expand 1.1s cubic-bezier(0.66, 0, 0.25, 1);
+
+}
+
+
+@keyframes threshold-expand {
+
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.15;
+    }
+
+    40% {
+        width: 20vw;
+        height: 20vw;
+        opacity: 0.65;
+    }
+
+    100% {
+        width: 220vw;
+        height: 220vw;
+        opacity: 0;
+    }
+
+}
+
 
 /* =========================================================
    SIDEBAR
 ========================================================= */
 
 .sidebar {
+
     position: fixed;
+
     left: 0;
     top: 0;
-    width: 220px;
+
+    width: var(--sidebar-width);
     height: 100vh;
-    padding: 20px 18px;
-    z-index: 100;
-    border-right: 1px solid rgba(239,239,235,.12);
-    background: rgba(5,6,6,.78);
-    backdrop-filter: blur(12px);
+
+    padding:
+        24px
+        22px;
+
+    border-right: 1px solid var(--line);
+
+    background:
+        rgba(233,233,227,0.74);
+
+    backdrop-filter: blur(14px);
+
+    z-index: 50;
+
+    display: flex;
+
+    flex-direction: column;
+
 }
+
 
 .site-name {
-    display: block;
-    color: var(--white);
+
+    color: var(--ink);
+
     text-decoration: none;
-    font-size: 15px;
-    letter-spacing: -.02em;
-    margin-bottom: 55px;
+
+    font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+    font-size: 31px;
+
+    line-height: 1;
+
+    letter-spacing: -0.025em;
+
 }
+
 
 .side-nav {
+
+    margin-top: 58px;
+
     display: flex;
+
     flex-direction: column;
-    gap: 34px;
+
+    gap: 29px;
+
 }
+
 
 .nav-group {
+
     display: flex;
+
     flex-direction: column;
+
     gap: 5px;
+
 }
+
 
 .side-nav a {
-    color: rgba(239,239,235,.4);
+
+    color: var(--soft-ink);
+
     text-decoration: none;
-    font-size: 11px;
-    line-height: 1.35;
-    transition: color .25s ease, opacity .25s ease, transform .25s ease;
+
+    transition:
+        color 0.25s ease,
+        transform 0.25s ease;
+
 }
 
-.side-nav a:hover,
-.side-nav a.is-active {
-    color: var(--white);
+
+.side-nav a:hover {
+
+    color: var(--ink);
+
+    transform: translateX(4px);
+
 }
 
-.side-nav a:hover { transform: translateX(4px); }
 
 .side-nav .nav-title {
-    color: rgba(239,239,235,.72);
-    margin-bottom: 4px;
-    letter-spacing: .04em;
+
+    color: var(--ink);
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.09em;
+
+    margin-bottom: 3px;
+
 }
 
-.side-nav .nav-title.is-active::before {
-    content: "";
-    display: inline-block;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--white);
-    margin: 0 7px 2px 0;
-    box-shadow: 0 0 7px rgba(255,255,255,.4);
+
+.side-nav a:not(.nav-title) {
+
+    font-size: 9px;
+
+    line-height: 1.5;
+
 }
 
-/* =========================================================
-   MOBILE
-========================================================= */
 
-.mobile-header,
-.index-menu { display: none; }
+/* active section */
+
+.side-nav a.active {
+
+    color: var(--ink);
+
+}
+
 
 /* =========================================================
-   MAIN / GENERAL
+   MAIN
 ========================================================= */
 
 main {
-    margin-left: 220px;
-    position: relative;
-    transition: opacity 1s ease, filter 1s ease;
-}
 
-.section {
-    position: relative;
+    margin-left: var(--sidebar-width);
+
     min-height: 100vh;
-    padding: 85px 6vw 140px;
-    isolation: isolate;
-    overflow: hidden;
-    background: var(--black);
-    color: var(--white);
+
 }
 
-.section-title {
-    position: relative;
-    z-index: 10;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: .12em;
-    color: rgba(239,239,235,.42);
-    margin-bottom: 70px;
-}
 
 /* =========================================================
-   UNIT 01 — COSMIC FIELD
+   GENERAL SECTION
+========================================================= */
+
+.section {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    padding:
+        48px
+        7vw
+        130px;
+
+}
+
+
+.section-topline {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: baseline;
+
+}
+
+
+.section-title {
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.13em;
+
+}
+
+
+.section-coordinate {
+
+    font-size: 8px;
+
+    color: var(--soft-ink);
+
+}
+
+
+/* =========================================================
+   COSMIC FIELD
 ========================================================= */
 
 .cosmic-field {
-    min-height: 100vh;
-    padding-top: 100px;
-    background:
-        radial-gradient(circle at 52% 35%, rgba(115,120,115,.055), transparent 28%),
-        #030404;
+
+    min-height: 370vh;
+
+    overflow: visible;
+
 }
 
-.cosmic-field::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 6%;
-    width: 88%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.17), transparent);
-}
 
 .cosmic-intro {
-    width: 230px;
-    margin: 0 0 52px auto;
-    color: rgba(239,239,235,.5);
-    font-size: 10px;
-    line-height: 1.55;
+
+    position: relative;
+
+    margin-top: 12vh;
+
+    margin-left: 11%;
+
+    min-height: 28vh;
+
 }
 
-.cosmic-intro p { margin: 16px 0; }
-.cosmic-intro-line { display: block; width: 100%; height: 1px; background: rgba(255,255,255,.16); }
+
+.cosmic-intro p {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: 240px;
+
+    margin: 0;
+
+    color: var(--soft-ink);
+
+    font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+    font-size: 21px;
+
+    line-height: 1.12;
+
+}
+
+
+.cosmic-orbit {
+
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    left: -35px;
+    top: -30px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(29,30,27,0.14);
+
+}
+
+
+.cosmic-orbit::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--moss);
+
+    left: 50%;
+    top: 3px;
+
+    transform: translateX(-50%);
+
+}
+
 
 .photo-project {
+
     position: relative;
-    min-height: 1100px;
+
 }
 
-.photo-project > .project-number {
-    color: rgba(239,239,235,.35);
-    font-family: monospace;
-    font-size: 10px;
-}
 
-.cosmic-gallery {
-    width: calc(100% + 12vw);
-    margin-left: -6vw;
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    cursor: grab;
-    overscroll-behavior-x: contain;
-}
+.photo-project h1 {
 
-.cosmic-gallery::-webkit-scrollbar { display: none; }
-.cosmic-gallery.is-dragging { cursor: grabbing; scroll-behavior: auto; }
-
-.cosmic-gallery-slide {
-    position: relative;
-    flex: 0 0 100%;
-    scroll-snap-align: center;
     margin: 0;
-    padding: 0 6vw;
+
+    font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+    font-weight: 400;
+
+    font-size:
+        clamp(42px, 6.5vw, 90px);
+
+    line-height: 0.88;
+
+    letter-spacing: -0.055em;
+
 }
 
-.cosmic-image {
-    width: 100%;
-    height: 66vh;
-    min-height: 420px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(145deg, #111313, #080909);
-    border: 1px solid rgba(239,239,235,.12);
-    color: rgba(239,239,235,.24);
-    font-family: monospace;
+
+.project-number,
+.photo-meta {
+
     font-size: 9px;
-    letter-spacing: .04em;
-    transition: border-color .5s ease, transform .8s cubic-bezier(.77,0,.175,1);
+
+    color: var(--soft-ink);
+
 }
 
-.cosmic-gallery-slide:hover .cosmic-image {
-    border-color: rgba(239,239,235,.28);
-    transform: translateY(-4px);
+
+.project-number {
+
+    margin-bottom: 10px;
+
 }
 
-.cosmic-gallery-slide figcaption {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    padding-top: 13px;
-    color: rgba(239,239,235,.55);
-    font-family: monospace;
-    font-size: 9px;
-    letter-spacing: .015em;
-}
 
-.gallery-hint {
-    margin-top: 13px;
-    color: rgba(239,239,235,.24);
-    font-family: monospace;
-    font-size: 8px;
-    letter-spacing: .06em;
-    text-align: right;
-}
+.photo-meta {
 
-/* Cosmic black hole gateway */
-
-.cosmic-gateway-wrap {
-    min-height: 350px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 40px;
-}
-
-.cosmic-gateway {
-    position: relative;
-    width: 110px;
-    height: 110px;
-    border: 0;
-    padding: 0;
-    background: transparent;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.gateway-core {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 34px;
-    height: 34px;
-    transform: translate(-50%,-50%);
-    border-radius: 50%;
-    background: #000;
-    box-shadow: 0 0 30px rgba(0,0,0,.9), 0 0 10px rgba(255,255,255,.06);
-}
-
-.gateway-orbit {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%) rotate(0deg);
-    border: 1px solid rgba(239,239,235,.18);
-    border-radius: 50%;
-    transition: width .7s ease, height .7s ease, border-color .7s ease, transform .8s ease;
-}
-
-.gateway-orbit-01 { width: 66px; height: 66px; }
-.gateway-orbit-02 { width: 95px; height: 43px; transform: translate(-50%,-50%) rotate(-24deg); border-color: rgba(239,239,235,.1); }
-
-.cosmic-gateway:hover .gateway-orbit-01 { width: 85px; height: 85px; border-color: rgba(239,239,235,.5); }
-.cosmic-gateway:hover .gateway-orbit-02 { width: 112px; height: 50px; transform: translate(-50%,-50%) rotate(-34deg); border-color: rgba(239,239,235,.28); }
-.cosmic-gateway:hover .gateway-core { box-shadow: 0 0 40px rgba(0,0,0,1), 0 0 15px rgba(255,255,255,.1); }
-
-.gateway-label {
     margin-top: 15px;
-    color: rgba(239,239,235,.28);
-    text-transform: lowercase;
-    font-family: monospace;
-    font-size: 8px;
-    letter-spacing: .08em;
+
 }
 
-body.gateway-opening .cosmic-gateway {
-    animation: gateway-collapse .95s cubic-bezier(.77,0,.175,1) forwards;
+
+/* PHOTO SET 01 */
+
+.photo-project-one {
+
+    margin-top: 17vh;
+
+    margin-left: 7%;
+
 }
 
-body.gateway-opening .cosmic-gateway-wrap { opacity: 1; }
-body.gateway-opening main { filter: blur(1px); }
+
+.cosmic-main-image {
+
+    margin-top: 55px;
+
+    width: 66%;
+
+    height: 65vh;
+
+}
+
+
+.cosmic-side-image {
+
+    position: absolute;
+
+    width: 19%;
+
+    height: 25vh;
+
+    top: 31vh;
+
+    right: 0;
+
+}
+
+
+.cosmic-side-image-two {
+
+    position: absolute;
+
+    width: 15%;
+
+    height: 20vh;
+
+    top: 61vh;
+
+    right: 17%;
+
+}
+
+
+/* PHOTO SET 02 */
+
+.photo-project-two {
+
+    margin-top: 38vh;
+
+    margin-left: 30%;
+
+}
+
+
+.photo-project-two .image-cosmic {
+
+    width: 71%;
+
+    height: 59vh;
+
+    margin-top: 48px;
+
+}
+
+
+.photo-detail-left {
+
+    position: absolute;
+
+    width: 21%;
+    height: 22vh;
+
+    left: -25%;
+    top: 23vh;
+
+}
+
+
+.photo-detail-right {
+
+    position: absolute;
+
+    width: 17%;
+    height: 27vh;
+
+    right: -7%;
+    top: 57vh;
+
+}
+
+
+/* PHOTO SET 03 */
+
+.photo-project-three {
+
+    margin-top: 42vh;
+
+    margin-left: 10%;
+
+}
+
+
+.photo-project-three .image-cosmic {
+
+    width: 57%;
+
+    height: 69vh;
+
+    margin-top: 55px;
+
+}
+
+
+.photo-detail-center {
+
+    position: absolute;
+
+    width: 24%;
+    height: 26vh;
+
+    right: 2%;
+    top: 42vh;
+
+}
+
+
+/* PHOTO SET 04 */
+
+.photo-project-four {
+
+    margin-top: 42vh;
+
+    margin-left: 27%;
+
+}
+
+
+.photo-project-four .image-cosmic {
+
+    width: 69%;
+
+    height: 62vh;
+
+    margin-top: 52px;
+
+}
+
+
+.portrait-detail-one {
+
+    position: absolute;
+
+    width: 21%;
+    height: 29vh;
+
+    left: -18%;
+
+    top: 31vh;
+
+}
+
+
+.portrait-detail-two {
+
+    position: absolute;
+
+    width: 18%;
+    height: 20vh;
+
+    right: -2%;
+
+    top: 65vh;
+
+}
+
 
 /* =========================================================
-   UNIT 02 — PROJECTS
-   Same spatial language, now more concrete
+   IMAGE SURFACE
+========================================================= */
+
+.image-placeholder {
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+
+        linear-gradient(
+            125deg,
+            rgba(174,184,165,0.24),
+            rgba(175,185,188,0.14) 42%,
+            rgba(201,190,167,0.14)
+        );
+
+    border: 1px solid rgba(29,30,27,0.10);
+
+}
+
+
+.image-placeholder::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 48%;
+    height: 130%;
+
+    left: 25%;
+    top: -18%;
+
+    border-left: 1px solid rgba(29,30,27,0.13);
+    border-right: 1px solid rgba(29,30,27,0.06);
+
+    border-radius: 50%;
+
+    transform: rotate(13deg);
+
+    transition:
+        transform 1.1s ease;
+
+}
+
+
+.image-placeholder::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 80%;
+    height: 1px;
+
+    left: 8%;
+    top: 55%;
+
+    background: rgba(29,30,27,0.16);
+
+    transform: rotate(-12deg);
+
+    transition:
+        transform 1s ease,
+        left 1s ease;
+
+}
+
+
+.image-placeholder:hover::before {
+
+    transform:
+        rotate(2deg)
+        translateX(25px)
+        scale(1.08);
+
+}
+
+
+.image-placeholder:hover::after {
+
+    transform:
+        rotate(-5deg)
+        translateX(18px);
+
+}
+
+
+.placeholder-label {
+
+    position: absolute;
+
+    left: 13px;
+    bottom: 11px;
+
+    font-size: 8px;
+
+    color: var(--soft-ink);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+
+}
+
+
+/* =========================================================
+   GRAPHIC THRESHOLD TRIGGERS
+========================================================= */
+
+.unit-threshold {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    margin-top: 22vh;
+
+    margin-bottom: 4vh;
+
+}
+
+
+.graphic-trigger {
+
+    width: 150px;
+    height: 150px;
+
+    border: 0;
+
+    background: transparent;
+
+    padding: 0;
+
+    cursor: pointer;
+
+    display: block;
+
+}
+
+
+.graphic-trigger svg {
+
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+
+}
+
+
+.graphic-circle {
+
+    fill: none;
+
+    stroke: var(--ink);
+
+    stroke-width: 0.7;
+
+    transform-origin: center;
+
+    transition:
+        transform 0.8s ease,
+        opacity 0.8s ease;
+
+}
+
+
+.circle-outer {
+    opacity: 0.22;
+}
+
+.circle-middle {
+    opacity: 0.4;
+}
+
+.circle-core {
+    fill: var(--ink);
+    stroke: none;
+    opacity: 0.82;
+}
+
+
+.graphic-wave {
+
+    fill: none;
+
+    stroke: var(--ink);
+
+    stroke-width: 0.75;
+
+    stroke-linecap: round;
+
+    opacity: 0.47;
+
+    stroke-dasharray: 2 5;
+
+    transition:
+        transform 0.8s ease,
+        opacity 0.5s ease;
+
+}
+
+
+.graphic-trigger:hover .circle-outer {
+
+    transform: scale(1.18);
+
+}
+
+
+.graphic-trigger:hover .circle-middle {
+
+    transform: scale(0.85);
+
+}
+
+
+.graphic-trigger:hover .circle-core {
+
+    transform: scale(1.5);
+
+}
+
+
+.graphic-trigger:hover .graphic-wave {
+
+    opacity: 0.85;
+
+    transform: translateY(-3px);
+
+}
+
+
+/* =========================================================
+   PROJECTS
 ========================================================= */
 
 .projects {
-    min-height: 100vh;
-    background: #090a0a;
-    color: var(--white);
+
+    min-height: 360vh;
+
 }
 
-.projects::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 6%;
-    width: 88%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
-}
 
 .project {
-    position: relative;
-    min-height: 820px;
-    margin-bottom: 160px;
-}
-
-.project-number {
-    font-family: monospace;
-    font-size: 10px;
-    color: rgba(239,239,235,.36);
-    letter-spacing: .02em;
-}
-
-.project h1 {
-    margin: 0;
-    font-size: clamp(22px, 2.7vw, 42px);
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: -.035em;
-}
-
-.project-info {
-    font-family: monospace;
-    font-size: 10px;
-    line-height: 1.5;
-    color: rgba(239,239,235,.4);
-}
-
-.image-placeholder {
-    background: linear-gradient(145deg, #151717, #0c0d0d);
-    border: 1px solid rgba(239,239,235,.12);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(239,239,235,.24);
-    font-family: monospace;
-    font-size: 9px;
-    letter-spacing: .04em;
-    transition: background .4s ease, border-color .4s ease, transform .7s cubic-bezier(.77,0,.175,1), box-shadow .5s ease;
-}
-
-.image-placeholder:hover {
-    background: linear-gradient(145deg, #191b1b, #0f1010);
-    border-color: rgba(239,239,235,.3);
-    transform: translateY(-5px);
-    box-shadow: 0 20px 55px rgba(0,0,0,.32);
-}
-
-.project-001 h1 { position: absolute; left: 7vw; top: 45px; }
-.project-001 .project-info { position: absolute; left: 7vw; top: 105px; }
-.project-001 .image-large { position: absolute; width: 58vw; height: 58vh; right: 2vw; top: 130px; }
-.project-001 .image-small { position: absolute; width: 21vw; height: 25vh; left: 4vw; bottom: 10px; }
-.project-description { position: absolute; width: 190px; right: 4vw; bottom: 5px; font-size: 11px; color: rgba(239,239,235,.4); line-height: 1.5; }
-
-.project-002 { min-height: 850px; }
-.project-002 h1 { position: absolute; left: 34vw; top: 70px; font-size: clamp(21px, 2.5vw, 38px); letter-spacing: .01em; line-height: 1.1; }
-.project-002 .project-info { position: absolute; left: 34vw; top: 205px; }
-.project-002 .image-medium { position: absolute; width: 35vw; height: 48vh; left: 7vw; top: 320px; }
-
-.project-003 h1 { position: absolute; left: 2vw; top: 65px; }
-.project-003 .image-wide { position: absolute; width: 68vw; height: 55vh; right: 0; top: 210px; }
-.project-003 .project-info { position: absolute; left: 2vw; bottom: 55px; }
-
-.project-004 { min-height: 650px; margin-bottom: 80px; }
-.project-004 h1 { position: absolute; left: 40vw; top: 80px; }
-.project-004 .image-small { position: absolute; width: 27vw; height: 35vh; left: 9vw; top: 260px; }
-
-/* body transition sentinel */
-#writing-threshold-sentinel {
-    height: 1px;
-    width: 100%;
-}
-
-/* =========================================================
-   PROJECTS -> WRITING TRANSITION
-========================================================= */
-
-#writing-threshold {
-    position: fixed;
-    inset: 0;
-    z-index: 850;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    opacity: 0;
-    visibility: hidden;
-    background: rgba(0,0,0,.78);
-    transition: opacity .35s ease, visibility .35s ease;
-}
-
-#writing-threshold.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.body-threshold-line {
-    width: min(31vw, 290px);
-    height: min(68vh, 560px);
-    overflow: visible;
-}
-
-.body-line {
-    fill: none;
-    stroke: rgba(255,255,255,.9);
-    stroke-width: 1.1;
-    vector-effect: non-scaling-stroke;
-    opacity: 0;
-    stroke-dasharray: 800;
-    stroke-dashoffset: 800;
-}
-
-#writing-threshold.active .body-line {
-    animation: body-draw 1.35s cubic-bezier(.77,0,.175,1) forwards;
-}
-
-#writing-threshold.active .body-line:nth-child(2) { animation-delay: .06s; }
-#writing-threshold.active .body-line:nth-child(3) { animation-delay: .12s; }
-#writing-threshold.active .body-line:nth-child(4) { animation-delay: .18s; }
-#writing-threshold.active .body-line:nth-child(5) { animation-delay: .24s; }
-#writing-threshold.active .body-line:nth-child(6) { animation-delay: .30s; }
-#writing-threshold.active .body-line:nth-child(7) { animation-delay: .36s; }
-
-/* =========================================================
-   UNIT 03 — WRITING ON MY BODY
-========================================================= */
-
-.writing {
-    min-height: 1250px;
-    background: #050606;
-}
-
-.writing::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 110px;
-    bottom: 110px;
-    width: 1px;
-    background: linear-gradient(180deg, transparent, rgba(255,255,255,.09), transparent);
-}
-
-.writing-orbit {
-    position: absolute;
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.writing-orbit-01 { width: 340px; height: 340px; left: 50%; top: 300px; transform: translateX(-50%); }
-.writing-orbit-02 { width: 520px; height: 520px; left: 50%; top: 210px; transform: translateX(-50%); border-color: rgba(255,255,255,.04); }
-
-.writing-mark {
-    position: absolute;
-    right: 7vw;
-    top: 170px;
-    font-family: monospace;
-    font-size: 8px;
-    color: rgba(255,255,255,.22);
-}
-
-.writing-fragment {
-    position: absolute;
-    max-width: 430px;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(15px, 1.6vw, 21px);
-    line-height: 1.55;
-    color: rgba(239,239,235,.72);
-    letter-spacing: -.01em;
-    opacity: .78;
-    transition: opacity .6s ease, transform .9s cubic-bezier(.77,0,.175,1), color .5s ease;
-}
-
-.fragment-01 { left: 8vw; top: 270px; }
-.fragment-02 { right: 10vw; top: 535px; }
-.fragment-03 { left: 25vw; top: 790px; color: rgba(239,239,235,.43); }
-.fragment-04 { right: 22vw; top: 1030px; color: rgba(239,239,235,.32); font-size: 28px; }
-
-.writing-fragment:hover {
-    opacity: 1;
-    color: var(--white);
-}
-
-/* =========================================================
-   FINAL ABOUT / CONTACT
-========================================================= */
-
-.final-space {
-    min-height: 580px;
-    background: #070808;
-    padding-bottom: 100px;
-}
-
-.final-grid {
-    display: grid;
-    grid-template-columns: 1.2fr .8fr;
-    gap: 10vw;
-    margin-left: 8vw;
-    max-width: 850px;
-}
-
-.final-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: rgba(239,239,235,.36);
-    margin-bottom: 28px;
-}
-
-.about-text {
-    max-width: 390px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: rgba(239,239,235,.62);
-}
-
-.about-text p { margin: 0 0 30px; }
-
-.contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
-}
-
-.contact-info a {
-    color: rgba(239,239,235,.62);
-    text-decoration: none;
-    font-size: 12px;
-    transition: color .25s ease;
-}
-
-.contact-info a:hover { color: var(--white); }
-
-.final-summary {
-    margin: 120px 0 0 8vw;
-    color: rgba(239,239,235,.2);
-    font-family: monospace;
-    font-size: 8px;
-    letter-spacing: .08em;
-}
-
-/* =========================================================
-   CLOSING THRESHOLD
-========================================================= */
-
-.closing-threshold {
-    position: relative;
-    min-height: 80vh;
-    margin-left: 220px;
-    background: #020303;
-    border-top: 1px solid rgba(255,255,255,.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-#closing-dot {
-    position: relative;
-    width: 12px;
-    height: 12px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-}
-
-.closing-dot-core {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 5px;
-    height: 5px;
-    transform: translate(-50%,-50%);
-    border-radius: 50%;
-    background: var(--white);
-    box-shadow: 0 0 6px rgba(255,255,255,.75), 0 0 18px rgba(255,255,255,.2);
-}
-
-.closing-dot-glow {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 80px;
-    height: 80px;
-    transform: translate(-50%,-50%);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,.07), transparent 70%);
-    transition: width .5s ease, height .5s ease;
-}
-
-#closing-dot:hover .closing-dot-glow { width: 130px; height: 130px; }
-
-.closing-year {
-    position: absolute;
-    left: 20px;
-    bottom: 20px;
-    color: rgba(239,239,235,.23);
-    font-family: monospace;
-    font-size: 8px;
-}
-
-/* =========================================================
-   ANIMATIONS
-========================================================= */
-
-@keyframes threshold-breath {
-    0%,100% { transform: scale(.95); opacity: .65; }
-    50% { transform: scale(1.06); opacity: 1; }
-}
-
-@keyframes threshold-ring-expand {
-    0% { width: 8px; height: 8px; opacity: .1; }
-    45% { opacity: 1; }
-    100% { width: 220vw; height: 220vw; opacity: 0; }
-}
-
-@keyframes threshold-flash {
-    0% { transform: translate(-50%,-50%) scale(.05); opacity: 0; }
-    35% { opacity: 1; }
-    65% { opacity: .35; }
-    100% { transform: translate(-50%,-50%) scale(5); opacity: 0; }
-}
-
-@keyframes threshold-collapse {
-    0% { width: 5px; height: 5px; opacity: 1; }
-    70% { opacity: 1; }
-    100% { width: 300vw; height: 300vw; opacity: 1; }
-}
-
-@keyframes gateway-collapse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(.3); opacity: 1; }
-    100% { transform: scale(3.6); opacity: 0; }
-}
-
-@keyframes body-draw {
-    0% { opacity: 0; stroke-dashoffset: 800; }
-    15% { opacity: 1; }
-    100% { opacity: 1; stroke-dashoffset: 0; }
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 700px) {
-
-    .sidebar { display: none; }
-
-    .mobile-header {
-        display: flex;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        padding: 15px;
-        justify-content: space-between;
-        z-index: 100;
-        background: rgba(5,6,6,.84);
-        backdrop-filter: blur(12px);
-        border-bottom: 1px solid rgba(255,255,255,.1);
-    }
-
-    .mobile-header a,
-    .mobile-header button {
-        color: var(--white);
-        font-family: inherit;
-        font-size: 12px;
-        text-decoration: none;
-        background: none;
-        border: none;
-        padding: 0;
-    }
-
-    .index-menu {
-        position: fixed;
-        display: none;
-        top: 47px;
-        left: 0;
-        width: 100%;
-        padding: 20px 15px;
-        background: rgba(5,6,6,.96);
-        border-bottom: 1px solid rgba(255,255,255,.1);
-        z-index: 90;
-    }
-
-    .index-menu.open { display: block; }
-
-    .index-menu a {
-        display: block;
-        color: rgba(239,239,235,.64);
-        text-decoration: none;
-        font-size: 12px;
-        margin-bottom: 12px;
-    }
-
-    main { margin-left: 0; }
-
-    .section {
-        min-height: 100vh;
-        padding: 80px 15px 100px;
-    }
-
-    .cosmic-intro {
-        width: 72%;
-        margin: 35px 0 55px auto;
-    }
-
-    .cosmic-gallery {
-        width: calc(100% + 30px);
-        margin-left: -15px;
-    }
-
-    .cosmic-gallery-slide { padding: 0 15px; }
-
-    .cosmic-image {
-        height: 60vh;
-        min-height: 360px;
-    }
-
-    .gallery-hint { padding-right: 2px; }
-
-    .cosmic-gateway-wrap { min-height: 260px; }
-
-    .project {
-        min-height: 700px;
-    }
-
-    .project h1 { font-size: 28px; }
-
-    .project-001 h1,
-    .project-001 .project-info,
-    .project-001 .image-large,
-    .project-001 .image-small,
-    .project-description,
-    .project-002 h1,
-    .project-002 .project-info,
-    .project-002 .image-medium,
-    .project-003 h1,
-    .project-003 .image-wide,
-    .project-003 .project-info,
-    .project-004 h1,
-    .project-004 .image-small {
-        position: relative;
-        left: auto;
-        right: auto;
-        top: auto;
-        bottom: auto;
-        width: 100%;
-        margin-bottom: 25px;
-    }
-
-    .image-placeholder {
-        height: 42vh !important;
-        margin-bottom: 25px;
-    }
-
-    .body-threshold-line {
-        width: 52vw;
-        height: 62vh;
-    }
-
-    .writing {
-        min-height: 1300px;
-    }
-
-    .writing::before { display: none; }
-
-    .writing-orbit-01 {
-        width: 230px;
-        height: 230px;
-        top: 420px;
-    }
-
-    .writing-orbit-02 {
-        width: 340px;
-        height: 340px;
-        top: 365px;
-    }
-
-    .writing-fragment {
-        position: relative;
-        left: auto;
-        right: auto;
-        top: auto;
-        max-width: 86%;
-        margin: 130px 0;
-        font-size: 17px;
-    }
-
-    .fragment-01 { margin-top: 180px; }
-    .fragment-02 { margin-left: 15%; }
-    .fragment-03 { margin-left: 8%; }
-    .fragment-04 { margin-left: 62%; }
-
-    .final-space { min-height: 650px; }
-
-    .final-grid {
-        grid-template-columns: 1fr;
-        gap: 70px;
-        margin-left: 0;
-    }
-
-    .final-summary { margin-left: 0; margin-top: 110px; }
-
-    .closing-threshold {
-        margin-left: 0;
-        min-height: 75vh;
-    }
-}
-
-
-/* =========================================================
-   ISA WU — THRESHOLD / ROOM ARCHITECTURE
-   SPATIAL SYSTEM ONLY
-
-   IMPORTANT:
-   Existing visual styles above remain unchanged.
-
-   Logic:
-   - The website has independent rooms.
-   - Each room occupies the same viewport.
-   - Each room may have its own natural content height.
-   - Scrolling happens INSIDE the active room.
-   - Gateways live at the end of each room.
-========================================================= */
-
-
-/* =========================================================
-   01. GLOBAL
-========================================================= */
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-}
-
-body {
-    overflow: hidden;
-}
-
-
-/* =========================================================
-   02. MAIN = BUILDING / ROOM CONTAINER
-========================================================= */
-
-main#top {
-    position: fixed;
-    inset: 0;
-
-    width: auto;
-    height: 100vh;
-
-    margin-left: 220px;
-
-    overflow: hidden;
-
-    transition:
-        opacity .7s ease,
-        filter .7s ease,
-        transform 1s cubic-bezier(.77,0,.175,1);
-}
-
-
-/* =========================================================
-   03. EACH SECTION = INDEPENDENT ROOM
-========================================================= */
-
-main#top > .section {
-
-    position: absolute;
-
-    left: 0;
-    top: 0;
-
-    width: 100%;
-
-    /*
-       The room occupies the viewport,
-       but its content is allowed to extend vertically.
-    */
-
-    min-height: 100%;
-    max-height: 100%;
-
-    margin: 0;
-
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-
-    transform: scale(1.018);
-    filter: blur(4px);
-
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    overscroll-behavior: contain;
-
-    scrollbar-width: thin;
-    scrollbar-color:
-        rgba(239,239,235,.16)
-        transparent;
-
-    transition:
-        opacity .8s ease,
-        transform 1s cubic-bezier(.77,0,.175,1),
-        filter .8s ease,
-        visibility 0s linear .8s;
-}
-
-
-/* Chrome / Safari scrollbar */
-
-main#top > .section::-webkit-scrollbar {
-    width: 4px;
-}
-
-main#top > .section::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-main#top > .section::-webkit-scrollbar-thumb {
-    background: rgba(239,239,235,.14);
-    border-radius: 10px;
-}
-
-
-/* =========================================================
-   04. ACTIVE ROOM
-========================================================= */
-
-main#top > .section.is-room-active {
-
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-
-    transform: scale(1);
-    filter: blur(0);
-
-    transition:
-        opacity .8s ease,
-        transform 1s cubic-bezier(.77,0,.175,1),
-        filter .8s ease,
-        visibility 0s linear 0s;
-}
-
-
-/* =========================================================
-   05. ROOM INTERNAL PADDING
-
-   This gives each room enough breathing space without
-   changing your visual language.
-========================================================= */
-
-main#top > .section {
-
-    padding-top: clamp(80px, 8vh, 110px);
-
-    padding-left: clamp(28px, 6vw, 100px);
-    padding-right: clamp(28px, 6vw, 100px);
-
-    padding-bottom:
-        clamp(140px, 18vh, 240px);
-}
-
-
-/* =========================================================
-   06. COSMIC FIELD
-   CLOSED ROOM
-   ---------------------------------------------------------
-   Cosmic itself does not vertically scroll.
-   The gallery remains horizontal.
-========================================================= */
-
-main#top > .cosmic-field {
-
-    overflow: hidden;
-
-    height: 100%;
-    min-height: 100%;
-    max-height: 100%;
-
-    padding-bottom: 0;
-}
-
-
-/* ---------------------------------------------------------
-   Cosmic content area
-
-   Reserve a lower "floor" for the gateway.
---------------------------------------------------------- */
-
-.cosmic-field .photo-project {
 
     position: relative;
 
-    min-height: 0;
-
-    height: calc(100vh - 250px);
-
-    margin-bottom: 150px;
 }
 
-
-/* Gallery occupies the visual field */
-
-.cosmic-field .cosmic-gallery {
-
-    height: 100%;
-}
-
-
-/* ---------------------------------------------------------
-   COSMIC GATEWAY
-   The gateway lives in a dedicated lower zone,
-   rather than sitting on top of the images.
---------------------------------------------------------- */
-
-.cosmic-field .cosmic-gateway-wrap {
-
-    position: absolute;
-
-    left: 0;
-    right: 0;
-
-    bottom: -145px;
-
-    width: 100%;
-
-    min-height: 170px;
-
-    margin: 0;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-direction: column;
-}
-
-
-/* Keep the gateway small and spatial */
-
-.cosmic-field .cosmic-gateway {
-    flex-shrink: 0;
-}
-
-
-/* =========================================================
-   07. PROJECTS
-   ---------------------------------------------------------
-   Projects is a true vertical room.
-
-   Content determines how long the room feels.
-========================================================= */
-
-main#top > .projects {
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    height: 100%;
-    max-height: 100%;
-}
-
-
-/* ---------------------------------------------------------
-   Project spacing
-
-   More generous than before.
---------------------------------------------------------- */
-
-.projects .project {
-
-    min-height:
-        clamp(700px, 88vh, 950px);
-
-    margin-bottom:
-        clamp(100px, 13vh, 170px);
-}
-
-
-/* =========================================================
-   PROJECT 001
-   More flexible proportions
-========================================================= */
 
 .project-001 {
 
-    min-height:
-        clamp(720px, 90vh, 960px);
+    margin-top: 18vh;
+
+    margin-left: 6%;
+
 }
 
 
-.project-001 h1 {
+.project h1 {
 
-    left: 0;
+    margin: 0;
 
-    top:
-        clamp(35px, 5vh, 65px);
+    font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+    font-weight: 400;
 
     font-size:
-        clamp(24px, 2.7vw, 40px);
+        clamp(52px, 8vw, 115px);
+
+    line-height: 0.84;
+
+    letter-spacing: -0.06em;
+
+    transition:
+        transform 0.6s ease,
+        letter-spacing 0.6s ease;
+
 }
 
 
-.project-001 .project-info {
+.project:hover h1 {
 
-    left: 0;
+    transform: translateX(7px);
 
-    top:
-        clamp(90px, 12vh, 120px);
+    letter-spacing: -0.035em;
+
 }
 
 
-.project-001 .image-large {
+.project-info {
 
-    width:
-        min(62%, 900px);
+    margin-top: 19px;
 
-    height:
-        clamp(430px, 58vh, 620px);
+    color: var(--soft-ink);
 
-    right: 0;
+    font-size: 9px;
 
-    top:
-        clamp(140px, 17vh, 180px);
 }
 
 
-.project-001 .image-small {
+.project-image-wrap {
 
-    width:
-        clamp(180px, 23%, 320px);
+    position: relative;
 
-    height:
-        clamp(180px, 25vh, 260px);
+    width: 68%;
 
-    left: 3%;
+    margin-top: 44px;
 
-    bottom: 20px;
 }
 
 
-.project-001 .project-description {
+.image-large {
 
-    width:
-        min(22%, 240px);
+    width: 100%;
 
-    right: 0;
+    height: 63vh;
 
-    bottom: 25px;
-
-    font-size:
-        clamp(10px, .8vw, 12px);
 }
 
 
-/* =========================================================
-   PROJECT 002
-========================================================= */
+.image-mark {
+
+    position: absolute;
+
+    width: 38px;
+    height: 38px;
+
+    right: -20px;
+    bottom: -18px;
+
+    border:
+
+        1px solid
+        rgba(29,30,27,0.3);
+
+    border-radius: 50%;
+
+}
+
+
+.image-small {
+
+    width: 24%;
+
+    height: 24vh;
+
+    margin-top: 25px;
+
+}
+
+
+.project-description {
+
+    position: absolute;
+
+    width: 230px;
+
+    right: 3%;
+
+    bottom: 7vh;
+
+}
+
+
+.project-description p {
+
+    margin: 0;
+
+    color: var(--soft-ink);
+
+    font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+    font-size: 18px;
+
+    line-height: 1.12;
+
+}
+
+
+/* PROJECT 002 */
 
 .project-002 {
 
-    min-height:
-        clamp(760px, 92vh, 980px);
+    margin-top: 45vh;
+
+    margin-left: 29%;
+
 }
 
 
 .project-002 h1 {
 
-    left: 31%;
-
-    top:
-        clamp(45px, 7vh, 80px);
-
     font-size:
-        clamp(24px, 2.55vw, 38px);
+        clamp(47px, 6.4vw, 91px);
+
 }
 
 
-.project-002 .project-info {
+.image-medium {
 
-    left: 31%;
+    width: 69%;
 
-    top:
-        clamp(175px, 20vh, 215px);
+    height: 62vh;
+
+    margin-top: 47px;
+
 }
 
 
-.project-002 .image-medium {
-
-    width:
-        clamp(330px, 38%, 560px);
-
-    height:
-        clamp(360px, 48vh, 520px);
-
-    left: 4%;
-
-    top:
-        clamp(285px, 33vh, 350px);
-}
-
-
-/* =========================================================
-   PROJECT 003
-========================================================= */
+/* PROJECT 003 */
 
 .project-003 {
 
-    min-height:
-        clamp(720px, 88vh, 930px);
+    margin-top: 48vh;
+
+    margin-left: 8%;
+
 }
 
 
 .project-003 h1 {
 
-    left: 0;
+    font-size:
+        clamp(46px, 6.7vw, 96px);
 
-    top:
-        clamp(45px, 7vh, 70px);
 }
 
 
-.project-003 .image-wide {
+.image-wide {
 
-    width:
-        min(72%, 1000px);
+    width: 79%;
 
-    height:
-        clamp(390px, 55vh, 590px);
+    height: 46vh;
 
-    right: 0;
+    margin-top: 45px;
 
-    top:
-        clamp(170px, 24vh, 230px);
 }
 
 
 .project-003 .project-info {
 
-    left: 0;
+    margin-left: 79%;
 
-    bottom: 35px;
+    margin-top: 12px;
+
 }
 
 
-/* =========================================================
-   PROJECT 004
-========================================================= */
+/* PROJECT 004 */
 
 .project-004 {
 
-    min-height:
-        clamp(600px, 72vh, 760px);
+    margin-top: 50vh;
 
-    margin-bottom: 0;
+    margin-left: 34%;
+
 }
 
 
 .project-004 h1 {
 
-    left: 36%;
+    font-size:
+        clamp(48px, 7.2vw, 105px);
 
-    top:
-        clamp(50px, 8vh, 85px);
 }
 
 
 .project-004 .image-small {
 
-    width:
-        clamp(250px, 31%, 440px);
+    width: 31%;
 
-    height:
-        clamp(300px, 40vh, 440px);
+    margin-top: 45px;
 
-    left: 7%;
+}
 
-    top:
-        clamp(210px, 29vh, 300px);
+
+/* second threshold */
+
+.unit-threshold-body {
+
+    margin-top: 28vh;
+
+    margin-bottom: 5vh;
+
+}
+
+
+.threshold-to-writing {
+
+    width: 145px;
+    height: 170px;
+
+}
+
+
+.body-outline {
+
+    fill: none;
+
+    stroke: var(--ink);
+
+    stroke-width: 0.7;
+
+    opacity: 0.55;
+
+    transition:
+        transform 1s ease,
+        opacity 0.6s ease;
+
+}
+
+
+.body-line {
+
+    fill: none;
+
+    stroke: var(--ink);
+
+    stroke-width: 0.6;
+
+    opacity: 0.28;
+
+}
+
+
+.body-point {
+
+    fill: var(--moss);
+
+    opacity: 0.75;
+
+}
+
+
+.threshold-to-writing:hover .body-outline {
+
+    transform:
+        translateY(-5px)
+        scale(1.04);
+
+    opacity: 0.85;
+
 }
 
 
 /* =========================================================
-   08. PROJECTS -> WRITING GATEWAY
-
-   Important:
-   The gateway is below Project 004.
-   It has its own floor / breathing space.
+   WRITING ON THE BODY
 ========================================================= */
-
-.projects .writing-gateway-wrap {
-
-    width: 100%;
-
-    min-height:
-        clamp(250px, 32vh, 340px);
-
-    margin-top:
-        clamp(90px, 14vh, 160px);
-
-    margin-bottom:
-        clamp(180px, 26vh, 300px);
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-direction: column;
-}
-
-
-/* This makes the transition point feel discovered,
-   not attached to the previous image. */
-
-.projects .writing-gateway-label {
-
-    margin-top: 18px;
-}
-
-
-/* =========================================================
-   09. WRITING
-========================================================= */
-
-main#top > .writing {
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    height: 100%;
-    max-height: 100%;
-}
-
-
-/* Allow the writing room to grow naturally */
 
 .writing {
 
-    min-height:
-        clamp(1250px, 145vh, 1650px);
+    min-height: 170vh;
 
-    height: auto;
-
-    padding-bottom:
-        clamp(220px, 30vh, 360px);
 }
 
 
-/* Keep original fragments but give them
-   slightly more space around them. */
+.writing-space {
 
-.fragment-01 {
-    top:
-        clamp(250px, 29vh, 320px);
-}
+    position: relative;
 
-.fragment-02 {
-    top:
-        clamp(500px, 55vh, 600px);
-}
+    height: 125vh;
 
-.fragment-03 {
-    top:
-        clamp(760px, 82vh, 880px);
-}
+    margin-top: 10vh;
 
-.fragment-04 {
-    top:
-        clamp(1000px, 108vh, 1160px);
 }
 
 
-/* =========================================================
-   10. WRITING -> FINAL GATEWAY
+.writing-fragment {
 
-   The doorway comes AFTER the textual field,
-   not beside it.
-========================================================= */
+    position: absolute;
 
-.writing .final-gateway-wrap {
+    font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
 
-    width: 100%;
+    font-size:
+        clamp(19px, 2vw, 28px);
 
-    min-height:
-        clamp(280px, 36vh, 420px);
+    line-height: 1.08;
 
-    margin-top:
-        clamp(160px, 22vh, 260px);
-
-    margin-bottom:
-        clamp(150px, 24vh, 300px);
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-direction: column;
-}
-
-
-/* =========================================================
-   11. FINAL ROOM
-========================================================= */
-
-main#top > .final-space {
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    height: 100%;
-    max-height: 100%;
-
-    padding-bottom:
-        clamp(180px, 25vh, 300px);
-}
-
-
-/* Final content gets more breathing room */
-
-.final-grid {
-
-    width:
-        min(100%, 950px);
-
-    margin-left:
-        clamp(0px, 8vw, 120px);
-}
-
-
-.final-summary {
-
-    margin-top:
-        clamp(100px, 13vh, 150px);
-}
-
-
-/* =========================================================
-   12. ROOM TRANSITIONS
-========================================================= */
-
-body.room-transition main#top {
-
-    opacity: 0;
-
-    transform:
-        scale(.985);
-
-    filter:
-        blur(5px);
-}
-
-
-/* Cosmic closing */
-
-body.cosmic-gateway-opening main#top {
-
-    opacity: .08;
-
-    transform:
-        scale(.96);
-
-    filter:
-        blur(7px);
-}
-
-
-/* Writing closing */
-
-body.writing-gateway-opening main#top {
-
-    opacity: .08;
-
-    transform:
-        scale(1.01);
-
-    filter:
-        blur(7px);
-}
-
-
-/* Final closing */
-
-body.final-gateway-opening main#top {
-
-    opacity: .08;
-
-    transform:
-        scale(.985);
-
-    filter:
-        blur(7px);
-}
-
-
-/* =========================================================
-   13. NAVIGATION
-   ---------------------------------------------------------
-   Hidden during the journey.
-   Revealed at the final room.
-========================================================= */
-
-.sidebar {
-
-    opacity: 0;
-
-    pointer-events: none;
+    color: rgba(29,30,27,0.75);
 
     transition:
-        opacity .7s ease;
+        opacity 0.5s ease,
+        transform 0.8s ease;
+
 }
 
 
-body.navigation-unlocked .sidebar {
+.writing-fragment:hover {
 
     opacity: 1;
 
-    pointer-events: auto;
-}
-
-
-/* ---------------------------------------------------------
-   When unlocked, sidebar becomes a compact top index.
---------------------------------------------------------- */
-
-body.navigation-unlocked .sidebar {
-
-    position: fixed;
-
-    left: 0;
-    top: 0;
-
-    width: 100%;
-    height: 52px;
-
-    padding:
-        0 18px;
-
-    display: flex;
-
-    align-items: center;
-
-    border-right: none;
-
-    border-bottom:
-        1px solid
-        rgba(239,239,235,.12);
-
-    background:
-        rgba(5,6,6,.78);
-
-    backdrop-filter:
-        blur(12px);
-
-    z-index: 300;
-}
-
-
-body.navigation-unlocked .site-name {
-
-    margin:
-        0 32px 0 0;
+    transform:
+        translateY(-5px);
 
 }
 
 
-body.navigation-unlocked .side-nav {
+.fragment-01 {
 
-    display: flex;
+    top: 5%;
 
-    flex-direction: row;
+    left: 12%;
 
-    align-items: center;
-
-    gap: 24px;
 }
 
 
-body.navigation-unlocked .nav-group {
+.fragment-02 {
 
-    display: flex;
+    top: 28%;
 
-    flex-direction: row;
+    left: 47%;
 
-    align-items: center;
-
-    gap: 10px;
 }
 
 
-/* Hide deep links in the unlocked top index */
+.fragment-03 {
 
-body.navigation-unlocked
-.nav-group > a:not(.nav-title) {
+    top: 59%;
 
-    display: none;
+    left: 19%;
+
 }
 
 
-/* Room titles become the navigation */
+.fragment-04 {
 
-body.navigation-unlocked
-.side-nav .nav-title {
+    top: 77%;
 
-    color:
-        rgba(239,239,235,.55);
+    left: 64%;
 
-    margin:
-        0;
+    font-size: 34px;
 
-    font-size: 10px;
 }
 
 
-/* Active room */
+.body-fragment {
 
-body.navigation-unlocked[data-room="cosmic"]
-.side-nav [data-unit-link="cosmic"],
+    position: absolute;
 
-body.navigation-unlocked[data-room="projects"]
-.side-nav [data-unit-link="projects"],
+    top: 5%;
 
-body.navigation-unlocked[data-room="writing"]
-.side-nav [data-unit-link="writing"] {
+    right: 11%;
 
-    color:
-        var(--white);
+    width: 220px;
+
+    opacity: 0.28;
+
+    transition:
+        opacity 0.8s ease,
+        transform 1s ease;
+
 }
 
 
-/* Since the navigation moved to the top,
-   remove the old left margin. */
+.body-fragment:hover {
 
-body.navigation-unlocked main#top {
+    opacity: 0.72;
 
-    margin-left: 0;
+    transform:
+        translateY(-8px)
+        rotate(1deg);
+
 }
 
 
-body.navigation-unlocked
-main#top > .section {
+.fragment-body-outline {
 
-    padding-top:
-        clamp(90px, 9vh, 115px);
+    fill: none;
+
+    stroke: var(--ink);
+
+    stroke-width: 0.8;
+
+}
+
+
+.fragment-body-line {
+
+    fill: none;
+
+    stroke: var(--ink);
+
+    stroke-width: 0.6;
+
+    opacity: 0.35;
+
+}
+
+
+/* organic lines */
+
+.writing-organic-line {
+
+    position: absolute;
+
+    height: 1px;
+
+    background: var(--ink);
+
+    opacity: 0.13;
+
+    transform-origin: left center;
+
+}
+
+
+.organic-one {
+
+    width: 33%;
+
+    top: 21%;
+
+    left: 3%;
+
+    transform: rotate(-12deg);
+
+}
+
+
+.organic-two {
+
+    width: 27%;
+
+    top: 67%;
+
+    right: 5%;
+
+    transform: rotate(21deg);
+
+}
+
+
+.organic-three {
+
+    width: 41%;
+
+    top: 47%;
+
+    left: 29%;
+
+    transform: rotate(-4deg);
+
 }
 
 
 /* =========================================================
-   14. CLOSING THRESHOLD
+   ABOUT
 ========================================================= */
 
-#closing-threshold {
+.about {
 
-    display: none;
+    min-height: 95vh;
+
 }
 
 
-body.navigation-unlocked[data-room="final"]
-#closing-threshold {
+.about-text {
 
-    display: flex;
+    width: min(680px, 72%);
 
-    position: fixed;
+    margin-top: 19vh;
 
-    left: 0;
-    right: 0;
-    bottom: 0;
+    margin-left: 11%;
 
-    width: 100%;
+}
 
-    height: 68px;
-    min-height: 68px;
+
+.about-text p {
 
     margin: 0;
 
-    z-index: 250;
+    font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
 
-    background:
-        rgba(2,3,3,.76);
+    font-size:
+        clamp(29px, 4vw, 52px);
 
-    border-top:
-        1px solid
-        rgba(255,255,255,.08);
+    line-height: 0.98;
 
-    backdrop-filter:
-        blur(10px);
+    letter-spacing: -0.035em;
 
-    align-items: center;
-    justify-content: center;
 }
 
 
 /* =========================================================
-   15. MOBILE
+   CONTACT
 ========================================================= */
 
-@media (max-width: 700px) {
+.contact {
 
-    body {
-        overflow: hidden;
+    min-height: 65vh;
+
+}
+
+
+.contact-links {
+
+    margin-top: 19vh;
+
+    margin-left: 11%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+}
+
+
+.contact-links a {
+
+    width: fit-content;
+
+    position: relative;
+
+    color: var(--ink);
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+}
+
+
+.contact-links a::after {
+
+    content: "";
+
+    position: absolute;
+
+    bottom: -4px;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 1px;
+
+    background: var(--ink);
+
+    transform:
+        scaleX(0);
+
+    transform-origin: left;
+
+    transition:
+        transform 0.35s ease;
+
+}
+
+
+.contact-links a:hover::after {
+
+    transform:
+        scaleX(1);
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding:
+        25px
+        7vw
+        35px;
+
+    border-top: 1px solid var(--line);
+
+    color: var(--soft-ink);
+
+    font-size: 9px;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+.mobile-header {
+
+    display: none;
+
+}
+
+
+.index-menu {
+
+    display: none;
+
+}
+
+
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+
+    :root {
+        --sidebar-width: 0px;
     }
 
 
-    main#top {
+    .sidebar {
+        display: none;
+    }
 
+
+    main {
         margin-left: 0;
-
     }
 
 
-    main#top > .section {
+    .mobile-header {
+
+        position: fixed;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        left: 0;
+        top: 0;
 
         width: 100%;
 
-        min-height: 100%;
-        max-height: 100%;
+        padding:
+            16px
+            20px;
+
+        background:
+            rgba(233,233,227,0.84);
+
+        border-bottom:
+            1px solid
+            var(--line);
+
+        backdrop-filter: blur(14px);
+
+        z-index: 100;
+
+    }
+
+
+    .mobile-header a {
+
+        color: var(--ink);
+
+        text-decoration: none;
+
+        font-family:
+            "Cormorant Garamond",
+            Georgia,
+            serif;
+
+        font-size: 28px;
+
+        line-height: 1;
+
+    }
+
+
+    #indexButton {
+
+        border: 0;
+
+        background: transparent;
+
+        font-family:
+            "DM Mono",
+            monospace;
+
+        font-size: 9px;
+
+        cursor: pointer;
+
+    }
+
+
+    .index-menu {
+
+        position: fixed;
+
+        left: 0;
+        top: 58px;
+
+        width: 100%;
 
         padding:
-            76px 15px 180px;
+            20px;
 
-        overflow-x: hidden;
-        overflow-y: auto;
+        background:
+            rgba(239,239,233,0.96);
 
-    }
+        border-bottom:
+            1px solid
+            var(--line);
 
+        z-index: 90;
 
-    /* Cosmic remains a closed visual room */
+        flex-direction: column;
 
-    main#top > .cosmic-field {
-
-        overflow: hidden;
-
-    }
-
-
-    /* Project room scrolls naturally */
-
-    main#top > .projects {
-
-        overflow-y: auto;
+        gap: 9px;
 
     }
 
 
-    /* Writing room */
+    .index-menu.open {
 
-    main#top > .writing {
-
-        overflow-y: auto;
+        display: flex;
 
     }
 
 
-    /* Final room */
+    .index-menu a {
 
-    main#top > .final-space {
+        color: var(--ink);
 
-        overflow-y: auto;
+        text-decoration: none;
 
-    }
-
-
-    /* Gateway breathing room */
-
-    .projects .writing-gateway-wrap {
-
-        min-height:
-            250px;
-
-        margin-top:
-            80px;
-
-        margin-bottom:
-            180px;
+        font-size: 9px;
 
     }
 
 
-    .writing .final-gateway-wrap {
+    .section {
 
-        min-height:
-            260px;
-
-        margin-top:
-            130px;
-
-        margin-bottom:
-            180px;
+        padding:
+            85px
+            22px
+            100px;
 
     }
 
 
-    /* Keep mobile index */
+    .cosmic-field {
 
-    body.navigation-unlocked .sidebar {
-
-        display: none;
+        min-height: 420vh;
 
     }
 
 
-    body.navigation-unlocked main#top {
+    .projects {
+
+        min-height: 340vh;
+
+    }
+
+
+    .cosmic-intro {
+
+        margin-left: 5%;
+
+    }
+
+
+    .cosmic-intro p {
+
+        width: 200px;
+
+        font-size: 18px;
+
+    }
+
+
+    .photo-project-one,
+    .photo-project-two,
+    .photo-project-three,
+    .photo-project-four,
+    .project-001,
+    .project-002,
+    .project-003,
+    .project-004 {
 
         margin-left: 0;
 
     }
 
 
-    body.navigation-unlocked
-    .mobile-header {
+    .photo-project-two,
+    .photo-project-three,
+    .photo-project-four,
+    .project-002,
+    .project-003,
+    .project-004 {
 
-        opacity: 1;
-
-        pointer-events: auto;
+        margin-top: 38vh;
 
     }
 
 
-    body.navigation-unlocked[data-room="final"]
-    #closing-threshold {
+    .photo-project h1,
+    .project h1 {
 
-        height: 56px;
-        min-height: 56px;
+        font-size:
+            clamp(40px, 13vw, 68px);
+
+        max-width: 95%;
+
+    }
+
+
+    .cosmic-main-image,
+    .photo-project-two .image-cosmic,
+    .photo-project-three .image-cosmic,
+    .photo-project-four .image-cosmic {
+
+        width: 100%;
+
+        height: 53vh;
+
+    }
+
+
+    .cosmic-side-image,
+    .cosmic-side-image-two,
+    .photo-detail-left,
+    .photo-detail-right,
+    .photo-detail-center,
+    .portrait-detail-one,
+    .portrait-detail-two {
+
+        position: relative;
+
+        width: 48%;
+
+        height: 24vh;
+
+        top: auto;
+        right: auto;
+        left: auto;
+
+        display: inline-block;
+
+        margin-top: 17px;
+
+    }
+
+
+    .project-image-wrap {
+
+        width: 100%;
+
+    }
+
+
+    .image-large,
+    .image-medium,
+    .image-wide {
+
+        width: 100%;
+
+        height: 50vh;
+
+    }
+
+
+    .project-description {
+
+        position: relative;
+
+        right: auto;
+
+        bottom: auto;
+
+        width: 70%;
+
+        margin-top: 35px;
+
+    }
+
+
+    .project-003 .project-info {
+
+        margin-left: 0;
+
+    }
+
+
+    .project-004 .image-small {
+
+        width: 60%;
+
+    }
+
+
+    .writing {
+
+        min-height: 150vh;
+
+    }
+
+
+    .writing-space {
+
+        height: auto;
+
+        min-height: 120vh;
+
+    }
+
+
+    .writing-fragment {
+
+        position: absolute;
+
+    }
+
+
+    .fragment-01 {
+        left: 4%;
+        top: 5%;
+    }
+
+
+    .fragment-02 {
+        left: 35%;
+        top: 27%;
+    }
+
+
+    .fragment-03 {
+        left: 8%;
+        top: 51%;
+    }
+
+
+    .fragment-04 {
+        left: 63%;
+        top: 72%;
+    }
+
+
+    .body-fragment {
+
+        width: 155px;
+
+        right: 3%;
+
+        top: 42%;
+
+    }
+
+
+    .about-text,
+    .contact-links {
+
+        width: 90%;
+
+        margin-left: 0;
+
+    }
+
+
+    .about-text {
+
+        margin-top: 15vh;
+
+    }
+
+
+    .about-text p {
+
+        font-size:
+            clamp(31px, 9vw, 50px);
+
+    }
+
+
+    .contact-links {
+
+        margin-top: 15vh;
+
+    }
+
+}
+
+
+@media (max-width: 520px) {
+
+    .section {
+
+        padding:
+            80px
+            17px
+            85px;
+
+    }
+
+
+    .cosmic-field {
+
+        min-height: 380vh;
+
+    }
+
+
+    .projects {
+
+        min-height: 325vh;
+
+    }
+
+
+    .photo-project-two,
+    .photo-project-three,
+    .photo-project-four,
+    .project-002,
+    .project-003,
+    .project-004 {
+
+        margin-top: 30vh;
+
+    }
+
+
+    .cosmic-side-image,
+    .cosmic-side-image-two,
+    .photo-detail-left,
+    .photo-detail-right,
+    .photo-detail-center,
+    .portrait-detail-one,
+    .portrait-detail-two {
+
+        width: 100%;
+
+    }
+
+
+    .graphic-trigger {
+
+        width: 125px;
+        height: 125px;
+
+    }
+
+
+    .threshold-to-writing {
+
+        width: 120px;
+        height: 145px;
 
     }
 
