@@ -1,70 +1,70 @@
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Isa Wu</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap"
-        rel="stylesheet"
-    >
-
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="threshold-locked">
 
-    <!-- =========================================================
-         THRESHOLD ENTRY
-    ========================================================== -->
+<body>
 
-    <div class="threshold-gate" id="thresholdGate">
+    <!-- =====================================================
+         THRESHOLD INTRO
+    ====================================================== -->
 
-        <div class="threshold-atmosphere"></div>
+    <div id="threshold-overlay">
 
-        <div class="threshold-star-field">
-            <span></span>
+        <div id="cursor-light"></div>
+
+        <button id="threshold-dot" aria-label="Enter">
+
+            <span class="threshold-dot-glow"></span>
+            <span class="threshold-dot-core"></span>
+
+        </button>
+
+        <div id="threshold-ring"></div>
+
+        <div id="threshold-light">
             <span></span>
             <span></span>
             <span></span>
         </div>
 
-        <button
-            class="threshold-trigger"
-            id="thresholdTrigger"
-            aria-label="Enter"
-        >
-            <span class="threshold-core"></span>
-            <span class="threshold-ring ring-one"></span>
-            <span class="threshold-ring ring-two"></span>
-            <span class="threshold-ring ring-three"></span>
-        </button>
+        <div id="threshold-void"></div>
 
     </div>
 
 
-    <!-- CURSOR LIGHT -->
+    <!-- =====================================================
+         ATMOSPHERE
+    ====================================================== -->
 
-    <div class="cursor-light" id="cursorLight"></div>
+    <div id="site-atmosphere">
+
+        <div class="atmosphere-light atmosphere-light-01"></div>
+        <div class="atmosphere-light atmosphere-light-02"></div>
+
+        <div class="atmosphere-grain"></div>
+
+    </div>
 
 
-    <!-- TRANSITION LAYER -->
-
-    <div class="threshold-transition" id="thresholdTransition"></div>
-
-
-
-    <!-- =========================================================
+    <!-- =====================================================
          LEFT SIDEBAR
-    ========================================================== -->
+    ====================================================== -->
 
     <aside class="sidebar">
 
-        <a href="#top" class="site-name">Isa Wu</a>
+        <a href=" " class="site-name">
+            Isa Wu
+        </a >
+
 
         <nav class="side-nav">
 
@@ -72,24 +72,24 @@
 
                 <a href="#cosmic-field" class="nav-title">
                     Cosmic field
-                </a>
+                </a >
 
                 <a href="#lost-city">
                     01: A Lost City Where<br>
                     I Call Home
-                </a>
+                </a >
 
                 <a href="#amar">
                     02: Amar una vez más
-                </a>
+                </a >
 
                 <a href="#memory-shape">
                     03: 形状记忆
-                </a>
+                </a >
 
                 <a href="#portraying">
                     04: Portraying
-                </a>
+                </a >
 
             </div>
 
@@ -98,24 +98,24 @@
 
                 <a href="#projects" class="nav-title">
                     Projects
-                </a>
+                </a >
 
                 <a href="#lotus">
                     001: Lotus
-                </a>
+                </a >
 
                 <a href="#letter">
                     002: A Letter for<br>
                     Netoсhka Nezvanova
-                </a>
+                </a >
 
                 <a href="#double-memory">
                     003: My Double Memory
-                </a>
+                </a >
 
                 <a href="#jiaji">
                     004: I Am Not Jiaji
-                </a>
+                </a >
 
             </div>
 
@@ -123,8 +123,8 @@
             <div class="nav-group">
 
                 <a href="#writing" class="nav-title">
-                    Writing on the body
-                </a>
+                    Writing on my body
+                </a >
 
             </div>
 
@@ -133,11 +133,11 @@
 
                 <a href="#about" class="nav-title">
                     About
-                </a>
+                </a >
 
                 <a href="#contact" class="nav-title">
                     Contact
-                </a>
+                </a >
 
             </div>
 
@@ -146,691 +146,172 @@
     </aside>
 
 
-
-    <!-- =========================================================
+    <!-- =====================================================
          MOBILE HEADER
-    ========================================================== -->
+    ====================================================== -->
 
     <header class="mobile-header">
 
-        <a href="#top">Isa Wu</a>
+        <a href="#top">
+            Isa Wu
+        </a >
 
-        <button id="indexButton" aria-label="Open index">
+        <button id="indexButton">
             Index
         </button>
 
     </header>
 
 
-
-    <!-- MOBILE INDEX -->
+    <!-- =====================================================
+         MOBILE INDEX
+    ====================================================== -->
 
     <nav class="index-menu" id="indexMenu">
 
-        <a href="#cosmic-field">Cosmic field</a>
+        <a href="#cosmic-field">
+            Cosmic field
+        </a >
 
         <a href="#lost-city">
             01: A Lost City Where I Call Home
-        </a>
+        </a >
 
         <a href="#amar">
             02: Amar una vez más
-        </a>
+        </a >
 
         <a href="#memory-shape">
             03: 形状记忆
-        </a>
+        </a >
 
         <a href="#portraying">
             04: Portraying
-        </a>
+        </a >
 
-        <a href="#projects">Projects</a>
+        <a href="#projects">
+            Projects
+        </a >
 
-        <a href="#lotus">001: Lotus</a>
+        <a href="#lotus">
+            001: Lotus
+        </a >
 
         <a href="#letter">
             002: A Letter for Netoсhka Nezvanova
-        </a>
+        </a >
 
         <a href="#double-memory">
             003: My Double Memory
-        </a>
+        </a >
 
         <a href="#jiaji">
             004: I Am Not Jiaji
-        </a>
+        </a >
 
-        <a href="#writing">Writing on the body</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
+        <a href="#writing">
+            Writing on my body
+        </a >
+
+        <a href="#about">
+            About
+        </a >
+
+        <a href="#contact">
+            Contact
+        </a >
 
     </nav>
 
 
-
-    <!-- =========================================================
+    <!-- =====================================================
          MAIN
-    ========================================================== -->
+    ====================================================== -->
 
     <main id="top">
 
 
-        <!-- =====================================================
+        <!-- =================================================
+             UNIT 01
              COSMIC FIELD
-        ====================================================== -->
+        ================================================== -->
 
         <section class="section cosmic-field" id="cosmic-field">
 
-            <div class="section-topline">
-
-                <div class="section-title">
-                    Cosmic field
-                </div>
-
-                <div class="section-coordinate">
-                    01 / 04
-                </div>
-
+            <div class="section-title">
+                Cosmic field
             </div>
 
 
             <div class="cosmic-intro">
 
-                <div class="cosmic-orbit"></div>
+                <span class="cosmic-intro-line"></span>
 
                 <p>
-                    Images gathered from places,
-                    distances and fragments of time.
-                </p>
+                    A field of images, places and fragments
+                    before the work takes form.
+                </p >
 
             </div>
 
 
-            <!-- 01 -->
+            <!-- =============================================
+                 01 — A LOST CITY
+            ============================================== -->
 
-            <article class="photo-project photo-project-one" id="lost-city">
+            <article class="photo-project" id="lost-city">
 
                 <div class="project-number">
                     01:
                 </div>
 
-                <h1>
-                    A Lost City Where<br>
-                    I Call Home
-                </h1>
 
-                <div class="photo-meta">
-                    Photography / 01
-                </div>
+                <div class="cosmic-gallery">
 
 
-                <div class="image-placeholder image-cosmic cosmic-main-image">
-                    <span class="placeholder-label">
-                        photograph / 01
-                    </span>
+                    <figure class="cosmic-gallery-slide">
 
-                    <span class="image-orbit"></span>
-                </div>
+                        <div class="cosmic-image">
+                            PHOTOGRAPH / 01
+                        </div>
 
+                        <figcaption>
 
-                <div class="image-placeholder image-cosmic-small cosmic-side-image">
-                    <span class="placeholder-label">
-                        photograph / 02
-                    </span>
-                </div>
+                            <span>
+                                A Lost City Where I Call Home
+                            </span>
 
-                <div class="image-placeholder image-cosmic-small cosmic-side-image-two">
-                    <span class="placeholder-label">
-                        photograph / 03
-                    </span>
-                </div>
+                            <span>
+                                01 / 03
+                            </span>
 
-            </article>
+                        </figcaption>
 
+                    </figure>
 
 
-            <!-- 02 -->
+                    <figure class="cosmic-gallery-slide">
 
-            <article class="photo-project photo-project-two" id="amar">
+                        <div class="cosmic-image">
+                            PHOTOGRAPH / 02
+                        </div>
 
-                <div class="project-number">
-                    02:
-                </div>
+                        <figcaption>
 
-                <h1>
-                    Amar una vez más
-                </h1>
+                            <span>
+                                A Lost City Where I Call Home
+                            </span>
 
-                <div class="photo-meta">
-                    Photography / 02
-                </div>
+                            <span>
+                                02 / 03
+                            </span>
 
+                        </figcaption>
 
-                <div class="image-placeholder image-cosmic">
-                    <span class="placeholder-label">
-                        photograph / 01
-                    </span>
-                </div>
+                    </figure>
 
 
-                <div class="image-placeholder image-cosmic-small photo-detail-left">
-                    <span class="placeholder-label">
-                        photograph / 02
-                    </span>
-                </div>
+                    <figure class="cosmic-gallery-slide">
 
-                <div class="image-placeholder image-cosmic-small photo-detail-right">
-                    <span class="placeholder-label">
-                        photograph / 03
-                    </span>
-                </div>
-
-            </article>
-
-
-
-            <!-- 03 -->
-
-            <article class="photo-project photo-project-three" id="memory-shape">
-
-                <div class="project-number">
-                    03:
-                </div>
-
-                <h1>
-                    形状记忆
-                </h1>
-
-                <div class="photo-meta">
-                    Photography / 03
-                </div>
-
-
-                <div class="image-placeholder image-cosmic">
-                    <span class="placeholder-label">
-                        photograph / 01
-                    </span>
-                </div>
-
-
-                <div class="image-placeholder image-cosmic-small photo-detail-center">
-                    <span class="placeholder-label">
-                        photograph / 02
-                    </span>
-                </div>
-
-            </article>
-
-
-
-            <!-- 04 -->
-
-            <article class="photo-project photo-project-four" id="portraying">
-
-                <div class="project-number">
-                    04:
-                </div>
-
-                <h1>
-                    Portraying
-                </h1>
-
-                <div class="photo-meta">
-                    Photography / 04
-                </div>
-
-
-                <div class="image-placeholder image-cosmic">
-                    <span class="placeholder-label">
-                        photograph / 01
-                    </span>
-                </div>
-
-                <div class="image-placeholder image-cosmic-small portrait-detail-one">
-                    <span class="placeholder-label">
-                        photograph / 02
-                    </span>
-                </div>
-
-                <div class="image-placeholder image-cosmic-small portrait-detail-two">
-                    <span class="placeholder-label">
-                        photograph / 03
-                    </span>
-                </div>
-
-            </article>
-
-
-            <!-- GRAPHIC THRESHOLD -->
-            <!-- no text -->
-
-            <div class="unit-threshold">
-
-                <button
-                    class="graphic-trigger threshold-to-projects"
-                    data-target="#projects"
-                    aria-label="Continue"
-                >
-
-                    <svg viewBox="0 0 160 160" aria-hidden="true">
-
-                        <circle
-                            cx="80"
-                            cy="80"
-                            r="53"
-                            class="graphic-circle circle-outer"
-                        />
-
-                        <circle
-                            cx="80"
-                            cy="80"
-                            r="35"
-                            class="graphic-circle circle-middle"
-                        />
-
-                        <circle
-                            cx="80"
-                            cy="80"
-                            r="10"
-                            class="graphic-circle circle-core"
-                        />
-
-                        <path
-                            d="M25 80 C42 55, 50 104, 80 80 C110 56, 122 105, 137 80"
-                            class="graphic-wave"
-                        />
-
-                    </svg>
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             PROJECTS
-        ====================================================== -->
-
-        <section class="section projects" id="projects">
-
-            <div class="section-topline">
-
-                <div class="section-title">
-                    Projects
-                </div>
-
-                <div class="section-coordinate">
-                    02 / 04
-                </div>
-
-            </div>
-
-
-            <!-- 001 -->
-
-            <article class="project project-001" id="lotus">
-
-                <div class="project-number">
-                    001:
-                </div>
-
-                <h1>
-                    Lotus
-                </h1>
-
-                <div class="project-info">
-                    2026<br>
-                    Short film
-                </div>
-
-                <div class="project-image-wrap">
-
-                    <div class="image-placeholder image-large">
-                        LOTUS / STILL 01
-                    </div>
-
-                    <div class="image-mark"></div>
-
-                </div>
-
-
-                <div class="image-placeholder image-small">
-                    LOTUS / STILL 02
-                </div>
-
-
-                <div class="project-description">
-                    <p>
-                        A girl returns with her mother to their ancestral
-                        village to honor her grandmother.
-                    </p>
-                </div>
-
-            </article>
-
-
-
-            <!-- 002 -->
-
-            <article class="project project-002" id="letter">
-
-                <div class="project-number">
-                    002:
-                </div>
-
-                <h1>
-                    A Letter for<br>
-                    Netoсhka<br>
-                    Nezvanova
-                </h1>
-
-                <div class="project-info">
-                    Film / Moving Image
-                </div>
-
-                <div class="image-placeholder image-medium">
-                    A LETTER / STILL
-                </div>
-
-            </article>
-
-
-
-            <!-- 003 -->
-
-            <article class="project project-003" id="double-memory">
-
-                <div class="project-number">
-                    003:
-                </div>
-
-                <h1>
-                    My Double Memory
-                </h1>
-
-                <div class="image-placeholder image-wide">
-                    MY DOUBLE MEMORY / STILL
-                </div>
-
-                <div class="project-info">
-                    Film / Research
-                </div>
-
-            </article>
-
-
-
-            <!-- 004 -->
-
-            <article class="project project-004" id="jiaji">
-
-                <div class="project-number">
-                    004:
-                </div>
-
-                <h1>
-                    I Am Not Jiaji
-                </h1>
-
-                <div class="image-placeholder image-small">
-                    I AM NOT JIAJI / STILL
-                </div>
-
-            </article>
-
-
-            <!-- GRAPHIC THRESHOLD -->
-            <!-- no text -->
-
-            <div class="unit-threshold unit-threshold-body">
-
-                <button
-                    class="graphic-trigger threshold-to-writing"
-                    data-target="#writing"
-                    aria-label="Continue"
-                >
-
-                    <svg viewBox="0 0 180 210" aria-hidden="true">
-
-                        <path
-                            d="
-                            M90 18
-                            C73 18 65 31 65 47
-                            C65 61 70 71 61 82
-                            C53 92 48 104 49 120
-                            C50 137 57 153 59 168
-                            C61 184 70 196 90 196
-                            C110 196 119 184 121 168
-                            C123 153 130 137 131 120
-                            C132 104 127 92 119 82
-                            C110 71 115 61 115 47
-                            C115 31 107 18 90 18
-                            Z
-                            "
-                            class="body-outline"
-                        />
-
-                        <path
-                            d="
-                            M70 96
-                            C82 103 99 103 110 96
-                            "
-                            class="body-line"
-                        />
-
-                        <path
-                            d="
-                            M70 119
-                            C82 126 99 126 110 119
-                            "
-                            class="body-line"
-                        />
-
-                        <circle
-                            cx="90"
-                            cy="42"
-                            r="5"
-                            class="body-point"
-                        />
-
-                    </svg>
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             WRITING ON THE BODY
-        ====================================================== -->
-
-        <section class="section writing" id="writing">
-
-            <div class="section-topline">
-
-                <div class="section-title">
-                    Writing on the body
-                </div>
-
-                <div class="section-coordinate">
-                    03 / 04
-                </div>
-
-            </div>
-
-
-            <div class="writing-space">
-
-                <div class="writing-organic-line organic-one"></div>
-                <div class="writing-organic-line organic-two"></div>
-                <div class="writing-organic-line organic-three"></div>
-
-
-                <div class="writing-fragment fragment-01">
-                    I remember the body<br>
-                    before I remember<br>
-                    the room.
-                </div>
-
-
-                <div class="writing-fragment fragment-02">
-                    The distance between<br>
-                    two people is sometimes<br>
-                    measured by language.
-                </div>
-
-
-                <div class="writing-fragment fragment-03">
-                    Memory does not stay<br>
-                    where we leave it.
-                </div>
-
-
-                <div class="writing-fragment fragment-04">
-                    ...
-                </div>
-
-
-                <div class="body-fragment">
-
-                    <svg viewBox="0 0 260 520" aria-hidden="true">
-
-                        <path
-                            d="
-                            M131 28
-                            C108 27 94 43 95 65
-                            C95 87 107 97 100 118
-                            C94 138 78 154 73 177
-                            C68 201 76 218 83 239
-                            C91 265 87 287 79 315
-                            C70 344 75 372 88 402
-                            C97 424 111 458 130 489
-                            C149 458 163 424 172 402
-                            C185 372 190 344 181 315
-                            C173 287 169 265 177 239
-                            C184 218 192 201 187 177
-                            C182 154 166 138 160 118
-                            C153 97 165 87 165 65
-                            C166 43 154 29 131 28
-                            Z
-                            "
-                            class="fragment-body-outline"
-                        />
-
-                        <path
-                            d="
-                            M103 140
-                            C123 150 143 150 162 140
-                            "
-                            class="fragment-body-line"
-                        />
-
-                        <path
-                            d="
-                            M94 182
-                            C116 194 148 194 174 182
-                            "
-                            class="fragment-body-line"
-                        />
-
-                    </svg>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             ABOUT
-        ====================================================== -->
-
-        <section class="section about" id="about">
-
-            <div class="section-topline">
-
-                <div class="section-title">
-                    About
-                </div>
-
-                <div class="section-coordinate">
-                    04 / 04
-                </div>
-
-            </div>
-
-
-            <div class="about-text">
-
-                <p>
-                    I am a filmmaker based in China, with a Master’s degree
-                    in Film and Audiovisual Studies from ESCAC. My work
-                    explores space, memory, gender, bodies, and the fantastic.
-                </p>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             CONTACT
-        ====================================================== -->
-
-        <section class="section contact" id="contact">
-
-            <div class="section-topline">
-
-                <div class="section-title">
-                    Contact
-                </div>
-
-            </div>
-
-
-            <div class="contact-links">
-
-                <a href="mailto:isa2605824@gmail.com">
-                    isa2605824@gmail.com
-                </a>
-
-                <a
-                    href="https://www.instagram.com/nubelit_/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    @nubelit_
-                </a>
-
-            </div>
-
-        </section>
-
-
-
-        <footer>
-
-            <span>Isa Wu</span>
-
-            <span>2026</span>
-
-        </footer>
-
-    </main>
-
-
-
-    <script src="script.js"></script>
-
-</body>
-</html>
+                        <div class="cosmic-image">
+                            PHOTOGRAPH /
