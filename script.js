@@ -1,65 +1,111 @@
 /* =========================================================
    ISA WU — THRESHOLD
+   THREE ROOMS / TWO THRESHOLD GATES
+
+   1. White point      -> Cosmic Field
+   2. Planet           -> Projects
+   3. Star             -> Writing on My Body
+   4. Closing point    -> return to the first screen
 ========================================================= */
+
+const body = document.body;
+const main = document.getElementById("top");
+
+const thresholdOverlay = document.getElementById("threshold-overlay");
+const thresholdDot = document.getElementById("threshold-dot");
+const cursorLight = document.getElementById("cursor-light");
+
+const cosmicField = document.getElementById("cosmic-field");
+const projects = document.getElementById("projects");
+const writing = document.getElementById("writing");
+const finalSpace = document.getElementById("about-contact");
+
+const cosmicGallery = document.getElementById("cosmic-gallery");
+const cosmicGateway = document.getElementById("cosmic-gateway");
+
+const writingGateway = document.getElementById("writing-gateway");
+const writingThreshold = document.getElementById("writing-threshold");
+
+const closingDot = document.getElementById("closing-dot");
+
+const indexButton = document.getElementById("indexButton");
+const indexMenu = document.getElementById("indexMenu");
+
+const unitLinks = document.querySelectorAll("[data-unit-link]");
+const allAnchors = document.querySelectorAll("a[href^='#']");
+
+let currentRoom = "threshold";
+let transitionLocked = false;
+
+let galleryDragging = false;
+let galleryPointerId = null;
+let galleryStartX = 0;
+let galleryStartScrollLeft = 0;
 
 
 /* =========================================================
-   THRESHOLD INTRO
+   ROOM STATE
 ========================================================= */
 
-const thresholdOverlay =
-    document.getElementById("threshold-overlay");
+const roomDepth = {
+    threshold: "0",
+    cosmic: "1",
+    projects: "2",
+    writing: "3",
+    final: "4"
+};
 
-const thresholdDot =
-    document.getElementById("threshold-dot");
 
-const cursorLight =
-    document.getElementById("cursor-light");
+function setRoom(room) {
+
+    currentRoom = room;
+
+    body.dataset.room = room;
+    body.dataset.thresholdDepth =
+        roomDepth[room] || "0";
+
+    if (main) {
+        main.dataset.siteState = room;
+    }
 
 
-/* ---------------------------------------------------------
-   Cursor light
---------------------------------------------------------- */
+    unitLinks.forEach((link) => {
 
-if (thresholdOverlay && cursorLight) {
-
-    window.addEventListener("mousemove", (event) => {
-
-        cursorLight.style.left =
-            event.clientX + "px";
-
-        cursorLight.style.top =
-            event.clientY + "px";
+        link.classList.toggle(
+            "is-active",
+            link.dataset.unitLink === room
+        );
 
     });
 
 }
 
 
-/* ---------------------------------------------------------
-   Enter the website
---------------------------------------------------------- */
+function unlockPage() {
 
-if (thresholdDot) {
+    body.classList.remove("room-lock");
 
-    thresholdDot.addEventListener("click", () => {
+}
 
-        document.body.classList.add(
-            "threshold-entering"
-        );
 
-        setTimeout(() => {
+function lockPage() {
 
-            document.body.classList.remove(
-                "threshold-entering"
-            );
+    body.classList.add("room-lock");
 
-            document.body.classList.add(
-                "threshold-complete"
-            );
+}
 
-        }, 1250);
 
+function scrollToRoom(element) {
+
+    if (!element) return;
+
+    const y =
+        element.getBoundingClientRect().top +
+        window.scrollY;
+
+    window.scrollTo({
+        top: y,
+        behavior: "auto"
     });
 
 }
@@ -69,33 +115,34 @@ if (thresholdDot) {
    MOBILE INDEX
 ========================================================= */
 
-const indexButton =
-    document.getElementById("indexButton");
-
-const indexMenu =
-    document.getElementById("indexMenu");
-
-
 if (indexButton && indexMenu) {
 
-    indexButton.addEventListener("click", () => {
+    indexButton.addEventListener(
+        "click",
+        () => {
 
-        indexMenu.classList.toggle("open");
+            indexMenu.classList.toggle(
+                "open"
+            );
 
-    });
+        }
+    );
 
 
     indexMenu
         .querySelectorAll("a")
         .forEach((link) => {
 
-            link.addEventListener("click", () => {
+            link.addEventListener(
+                "click",
+                () => {
 
-                indexMenu.classList.remove(
-                    "open"
-                );
+                    indexMenu.classList.remove(
+                        "open"
+                    );
 
-            });
+                }
+            );
 
         });
 
@@ -103,209 +150,155 @@ if (indexButton && indexMenu) {
 
 
 /* =========================================================
-   COSMIC GALLERY
-   Mouse drag + touch
+   CURSOR LIGHT
 ========================================================= */
 
-const galleries =
-    document.querySelectorAll(
-        ".cosmic-gallery"
+let mouseX =
+    window.innerWidth / 2;
+
+let mouseY =
+    window.innerHeight / 2;
+
+let lightX = mouseX;
+let lightY = mouseY;
+
+
+window.addEventListener(
+    "mousemove",
+    (event) => {
+
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+
+    }
+);
+
+
+function animateCursorLight() {
+
+    if (!cursorLight) return;
+
+
+    lightX +=
+        (mouseX - lightX) * 0.08;
+
+    lightY +=
+        (mouseY - lightY) * 0.08;
+
+
+    cursorLight.style.left =
+        `${lightX}px`;
+
+    cursorLight.style.top =
+        `${lightY}px`;
+
+
+    requestAnimationFrame(
+        animateCursorLight
     );
 
-
-galleries.forEach((gallery) => {
-
-    let isDown = false;
-
-    let startX = 0;
-
-    let scrollLeft = 0;
+}
 
 
-    gallery.addEventListener(
-        "mousedown",
-        (event) => {
-
-            isDown = true;
-
-            gallery.classList.add(
-                "is-dragging"
-            );
-
-            startX =
-                event.pageX -
-                gallery.offsetLeft;
-
-            scrollLeft =
-                gallery.scrollLeft;
-
-        }
-    );
-
-
-    gallery.addEventListener(
-        "mouseleave",
-        () => {
-
-            isDown = false;
-
-            gallery.classList.remove(
-                "is-dragging"
-            );
-
-        }
-    );
-
-
-    gallery.addEventListener(
-        "mouseup",
-        () => {
-
-            isDown = false;
-
-            gallery.classList.remove(
-                "is-dragging"
-            );
-
-        }
-    );
-
-
-    gallery.addEventListener(
-        "mousemove",
-        (event) => {
-
-            if (!isDown) {
-                return;
-            }
-
-            event.preventDefault();
-
-            const x =
-                event.pageX -
-                gallery.offsetLeft;
-
-            const walk =
-                (x - startX) * 1.2;
-
-            gallery.scrollLeft =
-                scrollLeft - walk;
-
-        }
-    );
-
-
-    let touchStart = 0;
-
-    let touchScroll = 0;
-
-
-    gallery.addEventListener(
-        "touchstart",
-        (event) => {
-
-            touchStart =
-                event.touches[0].pageX;
-
-            touchScroll =
-                gallery.scrollLeft;
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    gallery.addEventListener(
-        "touchmove",
-        (event) => {
-
-            const current =
-                event.touches[0].pageX;
-
-            const difference =
-                current - touchStart;
-
-            gallery.scrollLeft =
-                touchScroll - difference;
-
-        },
-        {
-            passive: true
-        }
-    );
-
-});
+animateCursorLight();
 
 
 /* =========================================================
-   SPACE GATEWAYS
+   01. WHITE POINT -> COSMIC FIELD
 ========================================================= */
 
-const projectsGateway =
-    document.getElementById(
-        "projectsGateway"
-    );
+function enterCosmic() {
 
-const writingGateway =
-    document.getElementById(
-        "writingGateway"
-    );
-
-
-function enterSpace(trigger, target) {
-
-    if (!trigger || !target) {
+    if (
+        currentRoom !== "threshold" ||
+        transitionLocked
+    ) {
         return;
     }
 
 
-    trigger.classList.add(
-        "triggering"
+    transitionLocked = true;
+
+
+    body.classList.add(
+        "threshold-entering"
     );
 
 
-    setTimeout(() => {
+    /*
+        The point contracts first.
+        Then the threshold opens.
+    */
 
-        target.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+    window.setTimeout(
+        () => {
 
-
-        setTimeout(() => {
-
-            trigger.classList.remove(
-                "triggering"
+            body.classList.add(
+                "threshold-complete"
             );
 
-        }, 800);
 
-    }, 180);
+            lockPage();
+
+
+            scrollToRoom(
+                cosmicField
+            );
+
+
+            setRoom(
+                "cosmic"
+            );
+
+        },
+        1050
+    );
+
+
+    /*
+        Leave enough time for the
+        visual transition to finish.
+    */
+
+    window.setTimeout(
+        () => {
+
+            body.classList.remove(
+                "threshold-entering"
+            );
+
+
+            transitionLocked = false;
+
+        },
+        1700
+    );
 
 }
 
 
-/* ---------------------------------------------------------
-   Cosmic Field → Projects
---------------------------------------------------------- */
+if (thresholdDot) {
 
-if (projectsGateway) {
-
-    projectsGateway.addEventListener(
+    thresholdDot.addEventListener(
         "click",
-        () => {
+        enterCosmic
+    );
 
-            const projects =
-                document.getElementById(
-                    "projects"
-                );
 
-            enterSpace(
-                projectsGateway,
-                projects
-            );
+    thresholdDot.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key === "Enter" ||
+                event.key === " "
+            ) {
+
+                event.preventDefault();
+
+                enterCosmic();
+
+            }
 
         }
     );
@@ -313,223 +306,881 @@ if (projectsGateway) {
 }
 
 
-/* ---------------------------------------------------------
-   Projects → Writing
---------------------------------------------------------- */
+/* =========================================================
+   COSMIC FIELD / HORIZONTAL BOOK
+
+   Cosmic Field is a closed room.
+
+   The user moves horizontally through
+   one image at a time.
+
+   Mouse wheel gestures are converted
+   into horizontal gallery movement.
+
+   Dragging also works.
+========================================================= */
+
+function cosmicSlideWidth() {
+
+    return cosmicGallery
+        ? cosmicGallery.clientWidth
+        : 0;
+
+}
+
+
+function currentCosmicIndex() {
+
+    const width =
+        cosmicSlideWidth();
+
+    if (!width) {
+        return 0;
+    }
+
+
+    return Math.round(
+        cosmicGallery.scrollLeft /
+        width
+    );
+
+}
+
+
+function updateCosmicSlideState() {
+
+    if (!cosmicGallery) {
+        return;
+    }
+
+
+    const index =
+        currentCosmicIndex();
+
+
+    cosmicGallery
+        .querySelectorAll(
+            ".cosmic-slide"
+        )
+        .forEach(
+            (slide, i) => {
+
+                slide.classList.toggle(
+                    "is-current",
+                    i === index
+                );
+
+            }
+        );
+
+}
+
+
+function goToCosmicSlide(index) {
+
+    if (!cosmicGallery) {
+        return;
+    }
+
+
+    const slides =
+        cosmicGallery.querySelectorAll(
+            ".cosmic-slide"
+        );
+
+
+    const safeIndex =
+        Math.max(
+            0,
+            Math.min(
+                index,
+                slides.length - 1
+            )
+        );
+
+
+    cosmicGallery.scrollTo({
+
+        left:
+            safeIndex *
+            cosmicSlideWidth(),
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+if (cosmicGallery) {
+
+
+    /* -----------------------------------------
+       Mouse wheel -> horizontal movement
+    ----------------------------------------- */
+
+    cosmicGallery.addEventListener(
+        "wheel",
+        (event) => {
+
+            if (
+                currentRoom !== "cosmic"
+            ) {
+                return;
+            }
+
+
+            event.preventDefault();
+
+
+            const raw =
+                Math.abs(event.deltaX) >
+                Math.abs(event.deltaY)
+
+                    ? event.deltaX
+
+                    : event.deltaY;
+
+
+            const direction =
+                raw > 0 ? 1 : -1;
+
+
+            goToCosmicSlide(
+                currentCosmicIndex() +
+                direction
+            );
+
+        },
+        {
+            passive: false
+        }
+    );
+
+
+    /* -----------------------------------------
+       Pointer drag
+    ----------------------------------------- */
+
+    cosmicGallery.addEventListener(
+        "pointerdown",
+        (event) => {
+
+            if (
+                currentRoom !== "cosmic"
+            ) {
+                return;
+            }
+
+
+            galleryDragging = true;
+
+            galleryPointerId =
+                event.pointerId;
+
+            galleryStartX =
+                event.clientX;
+
+            galleryStartScrollLeft =
+                cosmicGallery.scrollLeft;
+
+
+            cosmicGallery.classList.add(
+                "is-dragging"
+            );
+
+
+            cosmicGallery.setPointerCapture(
+                event.pointerId
+            );
+
+        }
+    );
+
+
+    cosmicGallery.addEventListener(
+        "pointermove",
+        (event) => {
+
+            if (
+                !galleryDragging ||
+                event.pointerId !==
+                    galleryPointerId
+            ) {
+                return;
+            }
+
+
+            const distance =
+                event.clientX -
+                galleryStartX;
+
+
+            cosmicGallery.scrollLeft =
+                galleryStartScrollLeft -
+                distance;
+
+        }
+    );
+
+
+    function stopGalleryDrag() {
+
+        if (!galleryDragging) {
+            return;
+        }
+
+
+        galleryDragging = false;
+
+        galleryPointerId = null;
+
+
+        cosmicGallery.classList.remove(
+            "is-dragging"
+        );
+
+
+        goToCosmicSlide(
+            currentCosmicIndex()
+        );
+
+    }
+
+
+    cosmicGallery.addEventListener(
+        "pointerup",
+        stopGalleryDrag
+    );
+
+
+    cosmicGallery.addEventListener(
+        "pointercancel",
+        stopGalleryDrag
+    );
+
+
+    /* -----------------------------------------
+       Track current image
+    ----------------------------------------- */
+
+    cosmicGallery.addEventListener(
+        "scroll",
+        () => {
+
+            requestAnimationFrame(
+                updateCosmicSlideState
+            );
+
+        }
+    );
+
+
+    /* -----------------------------------------
+       Keep slide position stable
+    ----------------------------------------- */
+
+    window.addEventListener(
+        "resize",
+        () => {
+
+            if (
+                currentRoom !== "cosmic"
+            ) {
+                return;
+            }
+
+
+            cosmicGallery.scrollTo({
+
+                left:
+                    currentCosmicIndex() *
+                    cosmicSlideWidth(),
+
+                behavior: "auto"
+
+            });
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   02. PLANET -> PROJECTS
+
+   The planet is the exit from Cosmic Field.
+
+   It is intentionally separate from
+   normal gallery movement.
+========================================================= */
+
+function enterProjects() {
+
+    if (
+        currentRoom !== "cosmic" ||
+        transitionLocked
+    ) {
+        return;
+    }
+
+
+    transitionLocked = true;
+
+
+    body.classList.add(
+        "cosmic-opening"
+    );
+
+
+    /*
+        Cosmic space contracts first.
+    */
+
+    window.setTimeout(
+        () => {
+
+            unlockPage();
+
+
+            scrollToRoom(
+                projects
+            );
+
+
+            setRoom(
+                "projects"
+            );
+
+        },
+        680
+    );
+
+
+    window.setTimeout(
+        () => {
+
+            body.classList.remove(
+                "cosmic-opening"
+            );
+
+
+            transitionLocked = false;
+
+        },
+        1250
+    );
+
+}
+
+
+if (cosmicGateway) {
+
+    cosmicGateway.addEventListener(
+        "click",
+        enterProjects
+    );
+
+}
+
+
+/* =========================================================
+   03. STAR -> WRITING ON MY BODY
+
+   This transition is deliberately different.
+
+   The female face appears first,
+   then settles into the black field,
+   and only then does Writing appear.
+========================================================= */
+
+function enterWriting() {
+
+    if (
+        currentRoom !== "projects" ||
+        transitionLocked
+    ) {
+        return;
+    }
+
+
+    transitionLocked = true;
+
+
+    body.classList.add(
+        "writing-opening"
+    );
+
+
+    if (writingThreshold) {
+
+        writingThreshold.classList.add(
+            "active"
+        );
+
+    }
+
+
+    /*
+        First stage:
+        the white face outline emerges.
+    */
+
+    window.setTimeout(
+        () => {
+
+            scrollToRoom(
+                writing
+            );
+
+
+            setRoom(
+                "writing"
+            );
+
+        },
+        980
+    );
+
+
+    /*
+        Second stage:
+        the face stops floating and
+        becomes embedded in the black.
+    */
+
+    window.setTimeout(
+        () => {
+
+            if (writingThreshold) {
+
+                writingThreshold.classList.add(
+                    "settled"
+                );
+
+            }
+
+        },
+        1450
+    );
+
+
+    /*
+        Finish transition.
+    */
+
+    window.setTimeout(
+        () => {
+
+            if (writingThreshold) {
+
+                writingThreshold.classList.remove(
+                    "active",
+                    "settled"
+                );
+
+            }
+
+
+            body.classList.remove(
+                "writing-opening"
+            );
+
+
+            transitionLocked = false;
+
+        },
+        2650
+    );
+
+}
+
 
 if (writingGateway) {
 
     writingGateway.addEventListener(
         "click",
-        () => {
-
-            const writing =
-                document.getElementById(
-                    "writing"
-                );
-
-            enterSpace(
-                writingGateway,
-                writing
-            );
-
-        }
+        enterWriting
     );
 
 }
 
 
 /* =========================================================
-   WRITING WATER MOVEMENT
+   VERTICAL ROOM STATE
+
+   Important:
+   scrolling only changes the visual locator.
+
+   It does NOT automatically open the next room.
+
+   The threshold object must still be clicked.
 ========================================================= */
 
-const writingSection =
-    document.getElementById(
-        "writing"
-    );
+const verticalRooms = [
 
-const writingFragments =
-    document.querySelectorAll(
-        ".writing-fragment"
-    );
+    {
+        element: projects,
+        room: "projects"
+    },
+
+    {
+        element: writing,
+        room: "writing"
+    },
+
+    {
+        element: finalSpace,
+        room: "final"
+    }
+
+];
 
 
-if (
-    writingSection &&
-    writingFragments.length
-) {
+function updateRoomFromScroll() {
 
-    let ticking = false;
+    if (
+        transitionLocked ||
+        currentRoom === "cosmic" ||
+        currentRoom === "threshold"
+    ) {
+        return;
+    }
 
 
-    window.addEventListener(
-        "scroll",
-        () => {
+    const center =
+        window.innerHeight * 0.5;
 
-            if (ticking) {
+
+    let best = null;
+
+    let bestDistance =
+        Infinity;
+
+
+    verticalRooms.forEach(
+        ({ element, room }) => {
+
+            if (!element) {
                 return;
             }
 
 
-            window.requestAnimationFrame(
-                () => {
-
-                    const rect =
-                        writingSection
-                            .getBoundingClientRect();
+            const rect =
+                element.getBoundingClientRect();
 
 
-                    const viewport =
-                        window.innerHeight;
+            const top =
+                rect.top;
+
+            const bottom =
+                rect.bottom;
 
 
-                    if (
-                        rect.bottom < 0 ||
-                        rect.top > viewport
-                    ) {
+            if (
+                top <= center &&
+                bottom >= center
+            ) {
 
-                        ticking = false;
-
-                        return;
-                    }
-
-
-                    const progress =
-                        (
-                            viewport -
-                            rect.top
-                        ) /
-                        (
-                            viewport +
-                            rect.height
-                        );
-
-
-                    writingFragments.forEach(
-                        (fragment, index) => {
-
-                            const movement =
-                                Math.sin(
-                                    progress * 6 +
-                                    index * 1.8
-                                ) * 3;
-
-
-                            fragment.style.marginTop =
-                                movement + "px";
-
-                        }
+                const distance =
+                    Math.abs(
+                        (top + bottom) / 2 -
+                        center
                     );
 
 
-                    ticking = false;
+                if (
+                    distance <
+                    bestDistance
+                ) {
+
+                    best = room;
+
+                    bestDistance =
+                        distance;
 
                 }
-            );
 
+            }
 
-            ticking = true;
-
-        },
-        {
-            passive: true
         }
     );
+
+
+    if (best) {
+
+        setRoom(best);
+
+    }
 
 }
 
 
+window.addEventListener(
+    "scroll",
+    () => {
+
+        requestAnimationFrame(
+            updateRoomFromScroll
+        );
+
+    },
+    {
+        passive: true
+    }
+);
+
+
 /* =========================================================
-   SIDEBAR ACTIVE STATES
+   SIDEBAR / MOBILE INDEX
+
+   Navigation can locate a room,
+   but it does not destroy the threshold system.
 ========================================================= */
 
-const sections =
-    document.querySelectorAll(
-        "section[id], article[id]"
-    );
+unitLinks.forEach(
+    (link) => {
 
-const navLinks =
-    document.querySelectorAll(
-        ".side-nav a"
-    );
+        link.addEventListener(
+            "click",
+            (event) => {
+
+                const targetRoom =
+                    link.dataset.unitLink;
 
 
-const observer =
-    new IntersectionObserver(
-        (entries) => {
-
-            entries.forEach((entry) => {
-
-                if (!entry.isIntersecting) {
+                if (!targetRoom) {
                     return;
                 }
 
 
-                const id =
-                    entry.target.id;
+                event.preventDefault();
 
 
-                navLinks.forEach((link) => {
+                /* Cosmic Field */
 
-                    link.classList.remove(
-                        "is-active"
+                if (
+                    targetRoom === "cosmic"
+                ) {
+
+                    unlockPage();
+
+                    body.classList.add(
+                        "threshold-complete"
                     );
 
 
-                    if (
-                        link.getAttribute(
-                            "href"
-                        ) === "#" + id
-                    ) {
-
-                        link.classList.add(
-                            "is-active"
-                        );
-
-                    }
-
-                });
-
-            });
-
-        },
-        {
-            rootMargin:
-                "-35% 0px -55% 0px"
-        }
-    );
+                    scrollToRoom(
+                        cosmicField
+                    );
 
 
-sections.forEach((section) => {
+                    lockPage();
 
-    observer.observe(section);
 
-});
+                    setRoom(
+                        "cosmic"
+                    );
+
+
+                    return;
+
+                }
+
+
+                /* Projects / Writing */
+
+                const target =
+                    targetRoom === "projects"
+                        ? projects
+                        : writing;
+
+
+                if (!target) {
+                    return;
+                }
+
+
+                unlockPage();
+
+
+                scrollToRoom(
+                    target
+                );
+
+
+                setRoom(
+                    targetRoom
+                );
+
+            }
+        );
+
+    }
+);
 
 
 /* =========================================================
-   CLOSING DOT
-   Return to top / threshold
+   NORMAL ANCHOR LINKS
 ========================================================= */
 
-const closingDot =
-    document.getElementById(
-        "closing-dot"
+allAnchors.forEach(
+    (link) => {
+
+        link.addEventListener(
+            "click",
+            (event) => {
+
+                const href =
+                    link.getAttribute(
+                        "href"
+                    );
+
+
+                if (
+                    !href ||
+                    href === "#" ||
+                    href === "#cosmic-field" ||
+                    href === "#projects" ||
+                    href === "#writing"
+                ) {
+
+                    return;
+
+                }
+
+
+                const target =
+                    document.querySelector(
+                        href
+                    );
+
+
+                if (!target) {
+                    return;
+                }
+
+
+                event.preventDefault();
+
+
+                unlockPage();
+
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   CLOSING POINT -> RETURN TO THRESHOLD
+
+   The final point closes the whole route
+   and returns the visitor to the beginning.
+========================================================= */
+
+function returnToThreshold() {
+
+    if (transitionLocked) {
+        return;
+    }
+
+
+    transitionLocked = true;
+
+
+    body.classList.add(
+        "returning-to-threshold"
     );
+
+
+    /*
+        Let the closing space darken first.
+    */
+
+    window.setTimeout(
+        () => {
+
+            window.scrollTo({
+                top: 0,
+                behavior: "auto"
+            });
+
+        },
+        420
+    );
+
+
+    /*
+        Restore the first state.
+    */
+
+    window.setTimeout(
+        () => {
+
+            body.classList.remove(
+                "threshold-complete",
+                "returning-to-threshold",
+                "writing-opening",
+                "cosmic-opening"
+            );
+
+
+            if (thresholdOverlay) {
+
+                thresholdOverlay.style.pointerEvents =
+                    "auto";
+
+            }
+
+
+            unlockPage();
+
+
+            setRoom(
+                "threshold"
+            );
+
+
+            transitionLocked = false;
+
+        },
+        1050
+    );
+
+}
 
 
 if (closingDot) {
 
     closingDot.addEventListener(
         "click",
-        () => {
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        }
+        returnToThreshold
     );
 
 }
+
+
+/* =========================================================
+   INITIAL STATE
+========================================================= */
+
+setRoom(
+    "threshold"
+);
+
+lockPage();
+
+
+window.scrollTo({
+    top: 0,
+    behavior: "auto"
+});
